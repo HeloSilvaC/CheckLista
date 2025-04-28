@@ -13,7 +13,7 @@ O projeto utiliza as seguintes tecnologias:
 - Bootstrap
 
 ### Back-end
-- PHP ou Python (Ainda em decisão)
+- PHP
 
 ### Banco de Dados
 - MySQL
@@ -30,8 +30,8 @@ O projeto utiliza as seguintes tecnologias:
 
 ### 🔧 Pré-requisitos
 Certifique-se de ter instalado:
-- Um servidor local como XAMPP, WAMP ou um servidor Python para rodar o backend
-- MySQL configurado (caso opte por armazenamento no banco de dados)
+- Um servidor local como XAMPP, WAMP para rodar o backend
+- MySQL configurado
 - Um navegador atualizado para acessar a interface
 
 ### ▶️ Passos para rodar o projeto
