@@ -1,0 +1,42 @@
+/* assets/css/style.css */
+
+/* Estilos gerais */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Navbar personalizada */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+/* Cards de notas */
+.card-note {
+    transition: transform 0.2s;
+    border-radius: 10px;
+}
+
+.card-note:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Cores para categorias */
+.bg-categoria-pessoal { background-color: #ffe0ac; }
+.bg-categoria-trabalho { background-color: #d4edda; }
+.bg-categoria-estudos { background-color: #cce5ff; }
+
+/* Footer fixo na parte inferior */
+footer {
+    margin-top: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .navbar-nav {
+        margin-top: 1rem;
+    }
+}
