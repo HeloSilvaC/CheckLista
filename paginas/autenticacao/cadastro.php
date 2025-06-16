@@ -1,44 +1,25 @@
 <?php
 require_once __DIR__ . '/../../autoload.php';
 
-try {
-    $pdo = obterConexao();
+carregarArquivo('/includes/cabecalho.php');
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$mensagem = $_SESSION['mensagem'] ?? null;
+$tipo = $_SESSION['tipo'] ?? null;
 
-        $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-        $senha = $_POST['senha'] ?? '';
+unset($_SESSION['mensagem'], $_SESSION['tipo']);
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Email inválido.");
-        }
+?>
 
-        if (strlen($senha) < 8) {
-            throw new Exception("A senha deve ter no mínimo 8 caracteres.");
-        }
-
-        $senhaHash = password_hash($senha, HASH_SENHA);
-
-        $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
-        $stmt->execute([$email]);
-
-        if ($stmt->fetch()) {
-            throw new Exception("Este email já está cadastrado.");
-        }
-
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
-        if (!$stmt->execute([$nome, $email, $senhaHash])) {
-            throw new Exception("Erro ao cadastrar usuário.");
-        }
-
-        $_SESSION['mensagem'] = "Cadastro realizado com sucesso!";
-        header('Location: login.php');
-        exit;
-    }
-
-    carregarArquivo('includes/cabecalho.php');
-    ?>
+<?php if ($mensagem): ?>
+    <script>
+        Swal.fire({
+            icon: '<?= $tipo ?>',
+            title: '<?= $mensagem ?>',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>
+<?php endif; ?>
 
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -48,12 +29,7 @@ try {
                         <h2 class="text-center">Cadastro de Usuário</h2>
                     </div>
                     <div class="card-body">
-                        <?php if (!empty($_SESSION['erro'])): ?>
-                            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['erro']) ?></div>
-                            <?php unset($_SESSION['erro']); ?>
-                        <?php endif; ?>
-
-                        <form method="POST" id="formCadastro">
+                        <form method="POST" id="formCadastro" action="../../sistema/acoes/cadastrar_usuario.php">
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome:</label>
                                 <input type="text" name="nome" id="nome" class="form-control" required
@@ -81,11 +57,6 @@ try {
         </div>
     </div>
 
-    <?php
-    carregarArquivo('includes/rodape.php');
-} catch (Exception $e) {
-    $_SESSION['erro'] = $e->getMessage();
-    header('Location: cadastro.php');
-    exit;
-}
+<?php
+carregarArquivo('includes/rodape.php');
 ?>
