@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Minha Página Inicial</title>
+    <style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+    }
+
+    header {
+        background-color: #004aad;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .buttons a {
+        background-color: white;
+        color: #004aad;
+        padding: 0.5rem 1rem;
+        margin-left: 0.5rem;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .buttons a:hover {
+        background-color: #e2e6ea;
+    }
+
+    main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+
+    .card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+        </style>
+    </head>
+</html>
