@@ -1,14 +1,12 @@
 <?php
 
-define('BASE_PATH', __DIR__ . '/');
+define('BASE_PATH', realpath(__DIR__) . '/');
 
 function carregarArquivo($caminhoRelativo) {
     $caminhoAbsoluto = BASE_PATH . ltrim($caminhoRelativo, '/');
-
     if (!file_exists($caminhoAbsoluto)) {
         throw new RuntimeException("Arquivo não encontrado: " . $caminhoRelativo);
     }
-
     require_once $caminhoAbsoluto;
 }
 
@@ -20,15 +18,25 @@ try {
 
 spl_autoload_register(function ($classe) {
     $caminho = str_replace('\\', '/', $classe);
-    try {
-        carregarArquivo("includes/{$caminho}.php");
-    } catch (Exception $e) {
-        error_log("Falha ao carregar classe: " . $classe);
+
+    $possiveisCaminhos = [
+        "sistema/includes/{$caminho}.php",
+        "sistema/{$caminho}.php"
+    ];
+
+    foreach ($possiveisCaminhos as $relativo) {
+        $absoluto = BASE_PATH . $relativo;
+        if (file_exists($absoluto)) {
+            require_once $absoluto;
+            return;
+        }
     }
+
+    error_log("Falha ao carregar classe: " . $classe);
 });
 
 try {
-    carregarArquivo('includes/conexao_bd.php');
+    require_once BASE_PATH . 'includes/conexao_bd.php';
 } catch (Exception $e) {
-    die("Erro ao carregar conexão com o banco de dados.");
+    die("Erro ao carregar conexão com o banco de dados.");
 }
