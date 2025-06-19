@@ -15,7 +15,8 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
 </head>
 <body>
 
-<h1>Bem-vindo à home</h1>
+<h1>Bem-vindo à home, a Paola é mt fodaaaa</h1>
+
 
 <?php if ($mensagem): ?>
     <script>
