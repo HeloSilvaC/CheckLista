@@ -47,7 +47,7 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-danger" href="../../../paginas/autenticacao/logout.php"><i
+                        <li><a class="dropdown-item text-danger" href="/CheckLista/paginas/autenticacao/logout.php"><i
                                         class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
                     </ul>
                 </li>

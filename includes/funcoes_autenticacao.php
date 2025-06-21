@@ -4,10 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+/**
+ * @return bool
+ */
 function esta_logado(): bool {
     return isset($_SESSION['usuario_id']);
 }
 
+/**
+ * @param string $url_login
+ * @return void
+ */
 function exigir_login(string $url_login = '../../paginas/autenticacao/login.php') {
     if (!esta_logado()) {
         header("Location: $url_login");
@@ -15,13 +22,19 @@ function exigir_login(string $url_login = '../../paginas/autenticacao/login.php'
     }
 }
 
-function usuario_logado_id(): ?int {
+/**
+ * @return int|null
+ */
+function usuario_logado_id() {
     return $_SESSION['usuario_id'] ?? null;
 }
 
+/**
+ * @return void
+ */
 function logout() {
     session_unset();
     session_destroy();
-    header("Location: ../paginas/autenticacao/login.php");
+    header("Location: /CheckLista/paginas/autenticacao/login.php");
     exit;
 }
