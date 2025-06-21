@@ -2,6 +2,10 @@
 require_once __DIR__ . '/../../autoload.php';
 carregarArquivo('/includes/cabecalho.php');
 
+if (esta_logado()){
+    header('Location: ../../paginas/checklist/listar.php');
+}
+
 $mensagem = $_SESSION['mensagem'] ?? null;
 $tipo = $_SESSION['tipo'] ?? null;
 

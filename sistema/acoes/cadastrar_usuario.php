@@ -17,7 +17,7 @@ if (!empty($nome) && !empty($email) && !empty($senha)) {
         header('Location: ../../paginas/autenticacao/login.php');
         exit;
     } else {
-        $_SESSION['mensagem'] = $usuario->getErro() ?? "Erro ao cadastrar usuário.";
+        $_SESSION['mensagem'] = $usuario->getError() ?? "Erro ao cadastrar usuário.";
         $_SESSION['tipo'] = 'error';
         header('Location: ../../paginas/autenticacao/cadastro.php');
         exit;

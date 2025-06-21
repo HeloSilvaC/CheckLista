@@ -2,11 +2,26 @@
 
 namespace models;
 
+/**
+ *
+ */
 class Usuarios
 {
+    /**
+     * @var
+     */
     private $resultado;
+    /**
+     * @var
+     */
     private $erro;
 
+    /**
+     * @param $nome
+     * @param $email
+     * @param $senha
+     * @return bool
+     */
     public function create($nome, $email, $senha)
     {
         try {
@@ -33,6 +48,11 @@ class Usuarios
         }
     }
 
+    /**
+     * @param $email
+     * @param $senha
+     * @return bool
+     */
     public function login($email, $senha)
     {
         try {
@@ -70,12 +90,18 @@ class Usuarios
     }
 
 
-    public function getResultado()
+    /**
+     * @return mixed
+     */
+    public function getResult()
     {
         return $this->resultado;
     }
 
-    public function getErro()
+    /**
+     * @return mixed
+     */
+    public function getError()
     {
         return $this->erro;
     }
