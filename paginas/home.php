@@ -34,7 +34,6 @@ $listas = $checklist->getResult();
                 <div class="card-body">
                     <?php
 
-
                     if ($listas):
                         echo '<ul class="list-group list-group-flush">';
                         foreach ($listas as $l) {
