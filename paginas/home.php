@@ -12,9 +12,25 @@ use models\Checklist;
 $usuario_id = usuario_logado_id();
 
 $checklist = new Checklist();
-$checklist->read($usuario_id);
+$checklist->read(['idUsuario' => $usuario_id]);
 $listas = $checklist->getResult();
+
+$mensagem = $_SESSION['mensagem'] ?? null;
+$tipo = $_SESSION['tipo'] ?? null;
+
+unset($_SESSION['mensagem'], $_SESSION['tipo']);
 ?>
+
+<?php if ($mensagem): ?>
+    <script>
+        Swal.fire({
+            icon: '<?= $tipo ?>',
+            title: '<?= $mensagem ?>',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>
+<?php endif; ?>
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
