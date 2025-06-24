@@ -12,34 +12,27 @@ function carregarArquivo($caminhoRelativo) {
 
 try {
     carregarArquivo('config.php');
-} catch (Exception $e) {
-    die("Erro ao carregar configurações: " . $e->getMessage());
-}
-
-try {
     carregarArquivo('includes/funcoes_autenticacao.php');
+    carregarArquivo('includes/conexao_bd.php');
 } catch (Exception $e) {
-    die("Erro ao carregar funções de autenticação: " . $e->getMessage());
-}
-
-try {
-    require_once BASE_PATH . 'includes/conexao_bd.php';
-} catch (Exception $e) {
-    die("Erro ao carregar conexão com o banco de dados.");
+    die("Erro ao carregar arquivos essenciais: " . $e->getMessage());
 }
 
 spl_autoload_register(function ($classe) {
     $caminho = str_replace('\\', '/', $classe);
 
-    $possiveisCaminhos = [
-        "sistema/includes/{$caminho}.php",
-        "sistema/{$caminho}.php"
+    $diretorios = [
+        'sistema/models/',
+        'sistema/crud/',
+        'sistema/includes/',
+        'sistema/api/',
+        'sistema/'
     ];
 
-    foreach ($possiveisCaminhos as $relativo) {
-        $absoluto = BASE_PATH . $relativo;
-        if (file_exists($absoluto)) {
-            require_once $absoluto;
+    foreach ($diretorios as $dir) {
+        $arquivo = BASE_PATH . $dir . $caminho . '.php';
+        if (file_exists($arquivo)) {
+            require_once $arquivo;
             return;
         }
     }

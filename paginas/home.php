@@ -3,7 +3,7 @@ require_once __DIR__ . '/../autoload.php';
 carregarArquivo('/includes/cabecalho.php');
 
 if (!esta_logado()) {
-    header('Location: ../paginas/autenticacao/login.php');
+    header('Location: /CheckLista/paginas/autenticacao/login.php');
     exit;
 }
 
@@ -12,7 +12,7 @@ use models\Checklist;
 $usuario_id = usuario_logado_id();
 
 $checklist = new Checklist();
-$checklist->read($usuario_id);
+$checklist->read(['idUsuario' => $usuario_id]);
 $listas = $checklist->getResult();
 
 // Para exemplo: simulação de $tarefas
@@ -23,15 +23,14 @@ $tarefas = []; // Substitua com seu carregamento real se houver
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Olá, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? "Usuário") ?> 👋</h2>
+        <h2 class="mb-0">Olá, <?= htmlspecialchars($_SESSION['usuario_nome']) ?? "Usuário" ?> 👋</h2>
         <div>
-            <a href="../checklist/listar.php" class="btn btn-success me-2">Todas as Checklistas</a>
-            <a href="../tarefas/listar.php" class="btn btn-primary">Todas as Tarefas</a>
+            <a href="checklist/criar.php" class="btn btn-success me-2">Todas as Checklistas</a>
+            <a href="Ch/paginas/tarefas/listar.php" class="btn btn-primary">Todas as Tarefa</a>
         </div>
     </div>
 
     <div class="row g-4">
-        <!-- Resumo de Checklists -->
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-success text-white">
@@ -39,6 +38,7 @@ $tarefas = []; // Substitua com seu carregamento real se houver
                 </div>
                 <div class="card-body">
                     <?php
+
                     if ($listas):
                         echo '<ul class="list-group list-group-flush">';
                         foreach ($listas as $l) {
@@ -53,7 +53,6 @@ $tarefas = []; // Substitua com seu carregamento real se houver
             </div>
         </div>
 
-        <!-- Resumo das Tarefas -->
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
@@ -61,10 +60,10 @@ $tarefas = []; // Substitua com seu carregamento real se houver
                 </div>
                 <div class="card-body">
                     <?php
-                    if (!empty($tarefas)):
+                    if (isset($tarefas)):
                         echo '<ul class="list-group list-group-flush">';
                         foreach ($tarefas as $t) {
-                            echo '<li class="list-group-item">' . htmlspecialchars($t['descricao']) . '</li>';
+                            echo '<li class="list-group-item text-decoration-line-through text-muted">' . htmlspecialchars($l['descricao']) . '</li>';
                         }
                         echo '</ul>';
                     else:

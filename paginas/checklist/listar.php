@@ -9,25 +9,13 @@ use models\Checklist;
 $usuario_id = usuario_logado_id();
 
 $checklist = new Checklist();
-$checklist->read($usuario_id);
+$checklist->read(['idUsuario' => $usuario_id]);
 $listas = $checklist->getResult();
 
-$mensagem = $_SESSION['mensagem'] ?? null;
-$tipo = $_SESSION['tipo'] ?? null;
 
-unset($_SESSION['mensagem'], $_SESSION['tipo']);
 ?>
 
-<?php if ($mensagem): ?>
-    <script>
-        Swal.fire({
-            icon: '<?= $tipo ?>',
-            title: '<?= $mensagem ?>',
-            showConfirmButton: false,
-            timer: 3000
-        });
-    </script>
-<?php endif; ?>
+
 
     <div class="container mt-5">
         <h2 class="text-center mb-4">Minhas Listas</h2>
@@ -67,7 +55,7 @@ carregarArquivo('includes/rodape.php');
 <div class="modal fade" id="modalNovaLista" tabindex="-1" aria-labelledby="modalNovaListaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="../../sistema/acoes/criar_checklist.php">
+            <form method="POST" action="/CheckLista/sistema/acoes/criar_checklist.php">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalNovaListaLabel">Nova Nota</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>

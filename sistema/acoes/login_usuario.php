@@ -14,19 +14,17 @@ if (!empty($email) && !empty($senha)) {
         $dados = $usuario->getResult();
         $_SESSION['mensagem'] = "Bem-vindo, {$dados['nome']}!";
         $_SESSION['tipo'] = 'success';
-        //header('Location: ../../paginas/home.php');
-        // coloquei para o listar porque o home não está pronto ainda (HELO)
-        header('Location: ../../paginas/checklist/listar.php');
+        header('Location: /CheckLista/paginas/home.php');
         exit;
     } else {
         $_SESSION['mensagem'] = $usuario->getError();
         $_SESSION['tipo'] = 'error';
-        header('Location: ../../paginas/autenticacao/login.php');
+        header('Location: /CheckLista/paginas/autenticacao/login.php');
         exit;
     }
 } else {
     $_SESSION['mensagem'] = 'Preencha todos os campos.';
     $_SESSION['tipo'] = 'warning';
-    header('Location: ../../paginas/autenticacao/login.php');
+    header('Location: /CheckLista/paginas/autenticacao/login.php');
     exit;
 }

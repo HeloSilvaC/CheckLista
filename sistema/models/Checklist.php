@@ -2,8 +2,11 @@
 
 namespace models;
 
+use crud\Create;
+use crud\Read;
+
 /**
- *
+ * Checklist
  */
 class Checklist
 {
@@ -23,56 +26,40 @@ class Checklist
      */
     public function create($titulo, $descricao)
     {
-        try {
-            $conn = obterConexao();
+        $usuario_id = usuario_logado_id();
 
-            $sql = "INSERT INTO checklist (titulo, descricao, idUsuario) 
-                    VALUES (:titulo, :descricao, :idUsuario)";
-            $stmt = $conn->prepare($sql);
+        $dados = [
+            'titulo' => $titulo,
+            'descricao' => $descricao,
+            'idUsuario' => $usuario_id
+        ];
 
-            $stmt->bindParam(':titulo', $titulo);
-            $stmt->bindParam(':descricao', $descricao);
-            $usuario_id = usuario_logado_id();
-            $stmt->bindParam(':idUsuario', $usuario_id);
-
-            if ($stmt->execute()) {
-                $this->resultado = "Novo registro criado com sucesso";
-                return true;
-            } else {
-                $this->erro = "Erro ao criar checklist";
-                return false;
-            }
-        } catch (\PDOException $e) {
-            $this->erro = "Erro: " . $e->getMessage();
+        $create = new Create();
+        if ($create->execute('checklist', $dados)) {
+            $this->resultado = $create->getResult();
+            return true;
+        } else {
+            $this->erro = $create->getError();
             return false;
         }
     }
 
     /**
-     * @param $usuario_id
+     * @param array $criterios
      * @return bool
      */
-    public function read($usuario_id)
+    public function read(array $criterios)
     {
-        try {
-            $conn = obterConexao();
-
-            $sql = "SELECT * FROM checklist WHERE idUsuario = :idUsuario";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':idUsuario', $usuario_id);
-
-            if ($stmt->execute()) {
-                $this->resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                return true;
-            } else {
-                $this->erro = "Erro ao buscar checklists";
-                return false;
-            }
-        } catch (\PDOException $e) {
-            $this->erro = "Erro: " . $e->getMessage();
+        $read = new Read();
+        if ($read->execute('checklist', $criterios)) {
+            $this->resultado = $read->getResult();
+            return true;
+        } else {
+            $this->erro = $read->getError();
             return false;
         }
     }
+
 
     /**
      * @return mixed

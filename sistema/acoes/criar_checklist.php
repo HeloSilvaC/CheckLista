@@ -16,12 +16,12 @@ $checklist = new Checklist();
 if ($checklist->create($titulo, $descricao)) {
     $_SESSION['mensagem'] = "Lista criada com sucesso!";
     $_SESSION['tipo'] = 'success';
-    header("Location: ../../paginas/checklist/listar.php");
+    header("Location: /CheckLista/paginas/checklist/listar.php");
     exit;
 } else {
     $_SESSION['mensagem'] = $checklist->getError() ?? "Erro ao criar a lista.";
     $_SESSION['tipo'] = 'error';
-    header("Location: ../../paginas/checklist/listar.php");
+    header("Location: /CheckLista/paginas/checklist/listar.php");
     exit;
 }
 

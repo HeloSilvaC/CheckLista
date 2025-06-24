@@ -14,17 +14,17 @@ if (!empty($nome) && !empty($email) && !empty($senha)) {
     if ($usuario->create($nome, $email, $senha)) {
         $_SESSION['mensagem'] = "Usuário cadastrado com sucesso!";
         $_SESSION['tipo'] = 'success';
-        header('Location: ../../paginas/autenticacao/login.php');
+        header('Location: /CheckLista/paginas/autenticacao/login.php');
         exit;
     } else {
         $_SESSION['mensagem'] = $usuario->getError() ?? "Erro ao cadastrar usuário.";
         $_SESSION['tipo'] = 'error';
-        header('Location: ../../paginas/autenticacao/cadastro.php');
+        header('Location: /CheckLista/paginas/autenticacao/cadastro.php');
         exit;
     }
 } else {
     $_SESSION['mensagem'] = "Preencha todos os campos.";
     $_SESSION['tipo'] = 'warning';
-    header('Location: ../../paginas/autenticacao/cadastro.php');
+    header('Location: /CheckLista/paginas/autenticacao/cadastro.php');
     exit;
 }
