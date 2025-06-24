@@ -67,7 +67,7 @@ carregarArquivo('includes/rodape.php');
 <div class="modal fade" id="modalNovaLista" tabindex="-1" aria-labelledby="modalNovaListaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="../../sistema/acoes/criar_checklist.php">
+            <form method="POST" action="/CheckLista/sistema/acoes/criar_checklist.php">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalNovaListaLabel">Nova Nota</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>

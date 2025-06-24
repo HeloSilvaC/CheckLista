@@ -29,7 +29,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                         <h2 class="text-center">Cadastro de Usuário</h2>
                     </div>
                     <div class="card-body">
-                        <form method="POST" id="formCadastro" action="../../sistema/acoes/cadastrar_usuario.php">
+                        <form method="POST" id="formCadastro" action="/CheckLista/sistema/acoes/cadastrar_usuario.php">
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome:</label>
                                 <input type="text" name="nome" id="nome" class="form-control" required

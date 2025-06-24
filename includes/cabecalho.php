@@ -12,9 +12,17 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/CheckLista/index.php">
-            <i class="bi bi-check2-square me-2"></i>CheckLista
-        </a>
+        <?php if (esta_logado()){ ?>
+            <a class="navbar-brand fw-bold" href="/CheckLista/paginas/home.php">
+                <i class="bi bi-check2-square me-2"></i>CheckLista
+            </a>
+        <?php }
+        else{?>
+            <a class="navbar-brand fw-bold" href="/CheckLista/index.php">
+                <i class="bi bi-check2-square me-2"></i>CheckLista
+            </a>
+        <?php }?>
+
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -23,7 +31,12 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
+                    <?php if (esta_logado()){ ?>
+                    <a class="nav-link" href="/CheckLista/paginas/home.php"><i class="bi bi-house-door me-1"></i> Início</a>
+                    <?php }
+                    else{?>
                     <a class="nav-link" href="/CheckLista/index.php"><i class="bi bi-house-door me-1"></i> Início</a>
+                    <?php }?>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/CheckLista/paginas/checklist/listar.php"><i

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../autoload.php';
 carregarArquivo('/includes/cabecalho.php');
 
 if (!esta_logado()) {
-    header('Location: ../paginas/autenticacao/login.php');
+    header('Location: /CheckLista/paginas/autenticacao/login.php');
     exit;
 }
 

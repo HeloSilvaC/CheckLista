@@ -15,7 +15,7 @@ function esta_logado(): bool {
  * @param string $url_login
  * @return void
  */
-function exigir_login(string $url_login = '../../paginas/autenticacao/login.php') {
+function exigir_login(string $url_login = '/CheckLista/paginas/autenticacao/login.php') {
     if (!esta_logado()) {
         header("Location: $url_login");
         exit;

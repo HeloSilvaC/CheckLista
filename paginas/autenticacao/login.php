@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../autoload.php';
 carregarArquivo('/includes/cabecalho.php');
 
 if (esta_logado()){
-    header('Location: checklist/paginas/home.php');
+    header('Location: /CheckLista/paginas/home.php');
 }
 
 $mensagem = $_SESSION['mensagem'] ?? null;
@@ -31,7 +31,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                         <h2 class="text-center">Login de Usuário</h2>
                     </div>
                     <div class="card-body">
-                        <form method="POST" id="formLogin" action="../../sistema/acoes/login_usuario.php">
+                        <form method="POST" id="formLogin" action="/CheckLista/sistema/acoes/login_usuario.php">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
                                 <input type="email" name="email" id="email" class="form-control" required
