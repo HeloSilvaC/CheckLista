@@ -1,11 +1,11 @@
 #tabela usuario
 CREATE TABLE usuarios (
-                          idUsuario int(11) NOT NULL,
-                          nome varchar(255) NOT NULL,
-                          email varchar(255) NOT NULL,
-                          senha varchusuariosar(255) NOT NULL,
-                          PRIMARY KEY (idUsuario)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+                            `idUsuario` int(11) NOT NULL AUTO_INCREMENT,
+                            `nome` varchar(255) NOT NULL,
+                            `email` varchar(255) NOT NULL,
+                            `senha` varchar(255) NOT NULL,
+                            PRIMARY KEY (`idUsuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 #tabela checklist
 CREATE TABLE checklist (
