@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/../../autoload.php';
 
+if (!esta_logado()) {
+    header('Location: /CheckLista/paginas/autenticacao/login.php');
+    exit;
+}
+
 carregarArquivo('/includes/cabecalho.php');
 
 $mensagem = $_SESSION['mensagem'] ?? null;
@@ -22,50 +27,63 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
     </script>
 <?php endif; ?>
 
-<div class="container mt-5">
+
+<div class="cover">
+    <button class="btn btn-light position-absolute top-0 end-0 m-3">Editar Capa</button>
+</div>
+
+<div class="text-center mt-5">
+    <h1 class="fw-bold display-4"><?= htmlspecialchars($_SESSION['usuario_nome']) ?></h1>
+
+    <a href="vizualizar_perfil.php?usuario=<?= urlencode($_SESSION['usuario_nome']) ?>" class="btn btn-primary mb-4">
+        Visualizar Perfil
+    </a>
+</div>
+
+<div class="container mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-6">
+        <div class="col-md-8 col-lg-7">
             <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-header bg-primary text-white text-center py-4 rounded-top">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-person-circle me-2"></i> <!-- Ícone de usuário -->
-                        Editar Perfil
-                    </h1>
-                </div>
                 <div class="card-body p-4">
-                    <form method="POST" id="formEditar" action="">
-                        <div class="mb-4">
-                            <label for="nome" class="form-label fw-semibold">Nome completo</label>
-                            <input type="text" name="nome" id="nome" class="form-control form-control-lg" required
-                                   value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>"
-                                   placeholder="Digite seu nome completo">
+                    <h5 class="mb-4 fw-semibold">Informações Pessoais</h5>
+                    <form method="post" action="editar.php">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="nome" class="form-label">Primeiro Nome</label>
+                                <input type="text" name="nome" class="form-control" id="nome" placeholder="Seu nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sobrenome" class="form-label">Último Nome</label>
+                                <input type="text" name="sobrenome" class="form-control" id="sobrenome" placeholder="Seu sobrenome" value="<?= htmlspecialchars($usuario['sobrenome'] ?? '') ?>">
+                            </div>
                         </div>
-                        <div class="mb-4">
-                            <label for="email" class="form-label fw-semibold">Endereço de Email</label>
-                            <input type="email" name="email" id="email" class="form-control form-control-lg" required
-                                   value="<?= htmlspecialchars($usuario['email'] ?? '') ?>"
-                                   placeholder="exemplo@dominio.com">
+
+                        <div class="row mb-3">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="email@exemplo.com" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="senha" class="form-label">Nova Senha</label>
+                                    <input type="password" name="senha" class="form-control" id="senha" placeholder="Digite nova senha (opcional)">
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="mb-4">
-                            <label for="senha" class="form-label fw-semibold">Nova senha (opcional)</label>
-                            <input type="password" name="senha" id="senha" class="form-control form-control-lg" minlength="8"
-                                   placeholder="Deixe em branco para manter a senha atual">
-                            <div class="form-text">Use no mínimo 8 caracteres.</div>
+
                         </div>
-                        <button type="submit" class="btn btn-success btn-lg w-100 fw-semibold">
-                            Salvar Alterações
-                        </button>
+
+
+
+                        <button type="submit" class="btn btn-success w-100">Salvar Alterações</button>
                     </form>
-                </div>
-                <div class="card-footer text-center py-3">
-                    <a href="perfil.php" class="text-decoration-none text-muted small">
-                        &larr; Voltar ao Perfil
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <?php
 carregarArquivo('includes/rodape.php');
 ?>
