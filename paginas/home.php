@@ -8,85 +8,146 @@ if (!esta_logado()) {
 }
 
 use models\Checklist;
+use crud\Read;
 
 $usuario_id = usuario_logado_id();
 
-$checklist = new Checklist();
-$checklist->read(['idUsuario' => $usuario_id]);
-$listas = $checklist->getResult();
+$checklistModel = new Checklist();
+$checklistModel->read(['idUsuario' => $usuario_id]);
+$listas = $checklistModel->getResult();
 
-$mensagem = $_SESSION['mensagem'] ?? null;
-$tipo = $_SESSION['tipo'] ?? null;
+$readTarefas = new Read();
+$readTarefas->execute("tarefas", ["idUsuario" => $usuario_id]);
+$tarefas = $readTarefas->getResult();
 
-unset($_SESSION['mensagem'], $_SESSION['tipo']);
+$pendentes = array_filter($tarefas, fn($t) => $t['concluida'] == 0);
+
+$recentes = array_filter($listas, function ($l) {
+    return isset($l['criado_em']) && strtotime($l['criado_em']) >= strtotime('-7 days');
+});
+
+$checklistsComMaisTarefas = [];
+foreach ($tarefas as $tarefa) {
+    $id = $tarefa['idChecklist'];
+    if (!isset($checklistsComMaisTarefas[$id])) {
+        $checklistsComMaisTarefas[$id] = 0;
+    }
+    $checklistsComMaisTarefas[$id]++;
+}
+
+$titulosChecklist = [];
+foreach ($listas as $lista) {
+    $titulosChecklist[$lista['idChecklist']] = $lista['titulo'];
+}
 ?>
-
-<?php if ($mensagem): ?>
-    <script>
-        Swal.fire({
-            icon: '<?= $tipo ?>',
-            title: '<?= $mensagem ?>',
-            showConfirmButton: false,
-            timer: 3000
-        });
-    </script>
-<?php endif; ?>
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Olá, <?= htmlspecialchars($_SESSION['usuario_nome']) ?? "Usuário" ?> 👋</h2>
         <div>
-            <a href="checklist/criar.php" class="btn btn-success me-2">Todas as Checklistas</a>
-            <a href="Ch/paginas/tarefas/listar.php" class="btn btn-primary">Todas as Tarefa</a>
+            <a href="/CheckLista/paginas/checklist/listar.php" class="btn btn-success me-2">Novo Checklist</a>
+            <a href="/CheckLista/paginas/tarefas/listar.php" class="btn btn-primary">Nova Tarefa</a>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Resumo de Checklists</h5>
-                </div>
+    <div class="row text-center mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-success">
                 <div class="card-body">
-                    <?php
-
-                    if ($listas):
-                        echo '<ul class="list-group list-group-flush">';
-                        foreach ($listas as $l) {
-                            echo '<li class="list-group-item">' . htmlspecialchars($l['titulo']) . '</li>';
-                        }
-                        echo '</ul>';
-                    else:
-                        echo '<p class="text-muted">Nenhum checklist encontrado.</p>';
-                    endif;
-                    ?>
+                    <h5>Total de Checklists</h5>
+                    <h3 class="text-success"><?= count($listas) ?></h3>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Resumo das Tarefas</h5>
-                </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-primary">
                 <div class="card-body">
-                    <?php
-                    if (isset($tarefas)):
-                        echo '<ul class="list-group list-group-flush">';
-                        foreach ($tarefas as $t) {
-                            echo '<li class="list-group-item text-decoration-line-through text-muted">' . htmlspecialchars($l['descricao']) . '</li>';
-                        }
-                        echo '</ul>';
-                    else:
-                        echo '<p class="text-muted">Nenhuma tarefa cadastrada.</p>';
-                    endif;
-                    ?>
+                    <h5>Total de Tarefas</h5>
+                    <h3 class="text-primary"><?= count($tarefas) ?></h3>
                 </div>
             </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body">
+                    <h5>Checklists recentes</h5>
+                    <h3 class="text-warning"><?= count($recentes) ?></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Últimos Checklists Criados</h5>
+        </div>
+        <div class="card-body">
+            <?php
+            usort($listas, function ($a, $b) {
+                return strtotime($b['criado_em'] ?? '1900-01-01') - strtotime($a['criado_em'] ?? '1900-01-01');
+            });
+            $ultimos = array_slice($listas, 0, 5);
+
+            if ($ultimos):
+                echo '<ul class="list-group list-group-flush">';
+                foreach ($ultimos as $l):
+                    $titulo = htmlspecialchars($l['titulo']);
+                    $data = isset($l['criado_em']) ? date('d/m/Y H:i', strtotime($l['criado_em'])) : 'Sem data';
+                    echo "<li class='list-group-item d-flex justify-content-between align-items-center'>
+                            <span>$titulo</span>
+                            <small class='text-muted'>$data</small>
+                          </li>";
+                endforeach;
+                echo '</ul>';
+            else:
+                echo '<p class="text-muted mb-0">Nenhum checklist criado ainda.</p>';
+            endif;
+            ?>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Tarefas Pendentes</h5>
+        </div>
+        <div class="card-body">
+            <?php
+            if ($pendentes):
+                echo '<ul class="list-group list-group-flush">';
+                foreach ($pendentes as $t):
+                    echo "<li class='list-group-item'>" . htmlspecialchars($t['descricao']) . "</li>";
+                endforeach;
+                echo '</ul>';
+            else:
+                echo '<p class="text-muted mb-0">Nenhuma tarefa pendente.</p>';
+            endif;
+            ?>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Checklists com Mais Tarefas</h5>
+        </div>
+        <div class="card-body">
+            <?php if ($checklistsComMaisTarefas): ?>
+                <ul class="list-group list-group-flush">
+                    <?php
+                    arsort($checklistsComMaisTarefas);
+                    foreach ($checklistsComMaisTarefas as $idChecklist => $quantidade):
+                        $titulo = htmlspecialchars($titulosChecklist[$idChecklist] ?? 'Desconhecido');
+                        echo "<li class='list-group-item d-flex justify-content-between align-items-center'>
+                                $titulo
+                                <span class='badge bg-secondary rounded-pill'>$quantidade</span>
+                              </li>";
+                    endforeach;
+                    ?>
+                </ul>
+            <?php else: ?>
+                <p class="text-muted mb-0">Nenhum dado disponível.</p>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
-<?php
-carregarArquivo('/includes/rodape.php');
-?>
+<?php carregarArquivo('/includes/rodape.php'); ?>

@@ -27,6 +27,14 @@ class Usuarios
      */
     public function create($nome, $email, $senha)
     {
+        $read = new Read();
+        $read->execute('usuarios', ['email' => $email]);
+
+        if ($read->getRowCount() > 0) {
+            $this->erro = "E-mail já cadastrado.";
+            return false;
+        }
+
         $hash = password_hash($senha, PASSWORD_DEFAULT);
 
         $dados = [
@@ -54,10 +62,7 @@ class Usuarios
     {
         try {
             $read = new Read();
-
-
-            $condicoes = ['email' => $email];
-            $read->execute('usuarios', $condicoes);
+            $read->execute('usuarios', ['email' => $email]);
 
             if ($read->getRowCount() === 1) {
                 $usuario = $read->getResult()[0];
