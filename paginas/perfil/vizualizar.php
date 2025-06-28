@@ -40,7 +40,7 @@ $usuario = $usuarios->getResult()[0];
 
 <div class="text-center mt-5">
 
-    <h1 class="fw-bold display-4"><?= htmlspecialchars($usuario['nome'] ?? $_SESSION['usuario_nome']) ?></h1>
+    <h1 class="fw-bold display-6"><?= htmlspecialchars($usuario['nome'] ?? $_SESSION['usuario_nome']) ?></h1>
 
 </div>
 
