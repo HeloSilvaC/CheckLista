@@ -12,10 +12,22 @@ $checklist = new Checklist();
 $checklist->read(['idUsuario' => $usuario_id]);
 $listas = $checklist->getResult();
 
+$mensagem = $_SESSION['mensagem'] ?? null;
+$tipo = $_SESSION['tipo'] ?? null;
 
+unset($_SESSION['mensagem'], $_SESSION['tipo']);
 ?>
 
-
+<?php if ($mensagem): ?>
+    <script>
+        Swal.fire({
+            icon: '<?= $tipo ?>',
+            title: '<?= $mensagem ?>',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>
+<?php endif; ?>
 
     <div class="container mt-5">
         <h2 class="text-center mb-4">Minhas Listas</h2>

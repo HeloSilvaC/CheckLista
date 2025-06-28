@@ -60,7 +60,6 @@ class Checklist
         }
     }
 
-
     /**
      * @return mixed
      */
