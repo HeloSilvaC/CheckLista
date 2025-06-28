@@ -2,53 +2,76 @@
 
 namespace models;
 
+use crud\Create;
+use crud\Read;
+
+/**
+ * Usuarios
+ */
 class Usuarios
 {
+    /**
+     * @var
+     */
     private $resultado;
+    /**
+     * @var
+     */
     private $erro;
 
+    /**
+     * @param $nome
+     * @param $email
+     * @param $senha
+     * @return bool
+     */
     public function create($nome, $email, $senha)
     {
-        try {
-            $conn = obterConexao();
+        $read = new Read();
+        $read->execute('usuarios', ['email' => $email]);
 
-            $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)";
-            $stmt = $conn->prepare($sql);
+        if ($read->getRowCount() > 0) {
+            $this->erro = "E-mail já cadastrado.";
+            return false;
+        }
 
-            $stmt->bindParam(':nome', $nome);
-            $stmt->bindParam(':email', $email);
-            $hash = password_hash($senha, PASSWORD_DEFAULT);
-            $stmt->bindParam(':senha', $hash);
+        $hash = password_hash($senha, PASSWORD_DEFAULT);
 
-            if ($stmt->execute()) {
-                $this->resultado = "Novo registro criado com sucesso";
-                return true;
-            } else {
-                $this->erro = "Erro ao criar usuário";
-                return false;
-            }
-        } catch (\PDOException $e) {
-            $this->erro = "Erro: " . $e->getMessage();
+        $dados = [
+            'nome' => $nome,
+            'email' => $email,
+            'senha' => $hash
+        ];
+
+        $create = new Create();
+        if ($create->execute('usuarios', $dados)) {
+            $this->resultado = $create->getResult();
+            return true;
+        } else {
+            $this->erro = $create->getError();
             return false;
         }
     }
 
+    /**
+     * @param string $email
+     * @param string $senha
+     * @return bool
+     */
     public function login($email, $senha)
     {
         try {
-            $conn = obterConexao();
-            $sql = "SELECT idUsuario, nome, email, senha FROM usuarios WHERE email = :email";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
+            $read = new Read();
+            $read->execute('usuarios', ['email' => $email]);
 
-            if ($stmt->rowCount() === 1) {
-                $usuario = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($read->getRowCount() === 1) {
+                $usuario = $read->getResult()[0];
 
                 if (password_verify($senha, $usuario['senha'])) {
                     if (session_status() === PHP_SESSION_NONE) {
                         session_start();
                     }
+
                     $_SESSION['usuario_id'] = $usuario['idUsuario'];
                     $_SESSION['usuario_nome'] = $usuario['nome'];
 
@@ -62,20 +85,24 @@ class Usuarios
                 $this->erro = "Usuário não encontrado.";
                 return false;
             }
-
         } catch (\PDOException $e) {
             $this->erro = "Erro: " . $e->getMessage();
             return false;
         }
     }
 
-
-    public function getResultado()
+    /**
+     * @return mixed
+     */
+    public function getResult()
     {
         return $this->resultado;
     }
 
-    public function getErro()
+    /**
+     * @return mixed
+     */
+    public function getError()
     {
         return $this->erro;
     }

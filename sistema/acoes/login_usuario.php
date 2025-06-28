@@ -11,20 +11,20 @@ $senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
 if (!empty($email) && !empty($senha)) {
     $usuario = new Usuarios();
     if ($usuario->login($email, $senha)) {
-        $dados = $usuario->getResultado();
+        $dados = $usuario->getResult();
         $_SESSION['mensagem'] = "Bem-vindo, {$dados['nome']}!";
         $_SESSION['tipo'] = 'success';
-        header('Location: ../../paginas/home.php');
+        header('Location: /CheckLista/paginas/home.php');
         exit;
     } else {
-        $_SESSION['mensagem'] = $usuario->getErro();
+        $_SESSION['mensagem'] = $usuario->getError();
         $_SESSION['tipo'] = 'error';
-        header('Location: ../../paginas/autenticacao/login.php');
+        header('Location: /CheckLista/paginas/autenticacao/login.php');
         exit;
     }
 } else {
     $_SESSION['mensagem'] = 'Preencha todos os campos.';
     $_SESSION['tipo'] = 'warning';
-    header('Location: ../../paginas/autenticacao/login.php');
-        exit;
+    header('Location: /CheckLista/paginas/autenticacao/login.php');
+    exit;
 }
