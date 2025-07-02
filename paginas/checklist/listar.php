@@ -47,12 +47,18 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                         <div class="card-body">
                             <p class="card-text"><?= nl2br(htmlspecialchars(substr($lista['descricao'], 0, 100))) ?>...</p>
                         </div>
-                        <div class="card-footer d-flex justify-content-between">
+                        <div class="card-footer d-flex justify-content-between align-items-center">
                             <small class="text-muted">
                                 <?= date('d/m/Y', strtotime($lista['data_criacao'] ?? 'now')) ?>
                             </small>
-                            <a href="visualizar.php?id=<?= $lista['id_checklist'] ?>" class="btn btn-sm btn-primary">Ver Tarefas</a>
+                            <div>
+                                <a href="visualizar.php?id=<?= $lista['id_checklist'] ?>" class="btn btn-sm btn-primary me-1">Ver</a>
+                                <form class="d-inline form-excluir-checklist" data-id="<?= $lista['id_checklist'] ?>">
+                                    <button type="button" class="btn btn-sm btn-danger btn-confirmar-exclusao" data-id="<?= $lista['id_checklist'] ?>">Excluir</button>
+                                </form>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -93,3 +99,41 @@ carregarArquivo('includes/rodape.php');
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const botoesExcluir = document.querySelectorAll('.btn-confirmar-exclusao');
+
+        botoesExcluir.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const idChecklist = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Essa ação vai excluir a checklist e suas tarefas.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sim, excluir',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/CheckLista/sistema/acoes/checklists/excluir_checklist.php';
+
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'id_checklist';
+                        input.value = idChecklist;
+
+                        form.appendChild(input);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
