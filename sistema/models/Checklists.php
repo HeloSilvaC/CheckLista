@@ -60,6 +60,38 @@ class Checklists
         }
     }
 
+    public function listarPorChecklistComDetalhes($id_usuario, $id_checklist): bool
+    {
+        $sql = "
+SELECT 
+    c.*,
+    t.id_tarefa,
+    t.descricao AS descricao_tarefa,
+    t.concluida,
+    t.ordem,
+    t.deletada AS deletada_tarefa,
+    t.data_criacao AS data_criacao_tarefa
+FROM checklists c
+LEFT JOIN tarefas t ON t.id_checklist = c.id_checklist AND t.deletada = 0
+WHERE c.id_usuario = :id_usuario
+  AND c.id_checklist = :id_checklist
+  AND c.deletada = 0
+ORDER BY c.data_criacao DESC, t.ordem ASC
+";
+
+        $read = new Read();
+        if ($read->query($sql, [
+            ':id_usuario' => $id_usuario,
+            ':id_checklist' => $id_checklist
+        ])) {
+            $this->resultado = $read->getResult();
+            return true;
+        } else {
+            $this->erro = $read->getError();
+            return false;
+        }
+    }
+
     /**
      * @return mixed
      */

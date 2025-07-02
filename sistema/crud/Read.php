@@ -2,46 +2,42 @@
 
 namespace crud;
 
-/**
- * Read
- */
 class Read
 {
-    /**
-     * @var array|null
-     */
     private $resultado;
-
-    /**
-     * @var string|null
-     */
     private $erro;
-
-    /**
-     * @var int
-     */
     private $rowCount = 0;
 
     /**
-     * @param string $tabela
-     * @param array $condicoes
-     * @param string $orderBy
-     * @param string $limit
-     * @return bool
+     * SELECT genérico com flexibilidade total
      */
-    public function execute(string $tabela, array $condicoes = [], string $orderBy = '', string $limit = ''): bool
-    {
+    public function execute(
+        string $tabelaOuSQL,
+        array $condicoes = [],
+        string $orderBy = '',
+        string $limit = '',
+        string $select = '*',
+        string $wherePersonalizado = ''
+    ): bool {
         try {
             $conn = obterConexao();
 
-            $sql = "SELECT * FROM $tabela";
+            // Se for uma query completa, use query()
+            if (stripos($tabelaOuSQL, 'SELECT') === 0) {
+                return $this->query($tabelaOuSQL, $condicoes);
+            }
 
+            $sql = "SELECT $select FROM $tabelaOuSQL";
+
+            // WHERE automático
             if (!empty($condicoes)) {
                 $where = [];
                 foreach ($condicoes as $campo => $valor) {
                     $where[] = "$campo = :$campo";
                 }
                 $sql .= " WHERE " . implode(' AND ', $where);
+            } elseif ($wherePersonalizado) {
+                $sql .= " WHERE $wherePersonalizado";
             }
 
             if ($orderBy) {
@@ -66,6 +62,7 @@ class Read
                 $this->erro = "Erro ao buscar dados.";
                 return false;
             }
+
         } catch (\PDOException $e) {
             $this->erro = "Erro: " . $e->getMessage();
             return false;
@@ -73,24 +70,43 @@ class Read
     }
 
     /**
-     * @return array|null
+     * Executa uma query SQL completa com binds
      */
+    public function query(string $sql, array $params = []): bool
+    {
+        try {
+            $conn = obterConexao();
+            $stmt = $conn->prepare($sql);
+
+            foreach ($params as $chave => $valor) {
+                $stmt->bindValue(is_string($chave) ? $chave : ($chave + 1), $valor);
+            }
+
+            if ($stmt->execute()) {
+                $this->resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $this->rowCount = $stmt->rowCount();
+                return true;
+            } else {
+                $this->erro = "Erro ao executar query.";
+                return false;
+            }
+
+        } catch (\PDOException $e) {
+            $this->erro = "Erro: " . $e->getMessage();
+            return false;
+        }
+    }
+
     public function getResult()
     {
         return $this->resultado;
     }
 
-    /**
-     * @return string|null
-     */
     public function getError()
     {
         return $this->erro;
     }
 
-    /**
-     * @return int
-     */
     public function getRowCount(): int
     {
         return $this->rowCount;
