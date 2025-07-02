@@ -58,7 +58,7 @@ $usuario = $usuarios->getResult()[0];
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">E-mail:</label>
-                        <p class="form-control-plaintext"><?=htmlspecialchars($usuario['email'] ?? '') ?></p>
+                        <p class="form-control-plaintext"><?= htmlspecialchars($usuario['email'] ?? '') ?></p>
                     </div>
 
 

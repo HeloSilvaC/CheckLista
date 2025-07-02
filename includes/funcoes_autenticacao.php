@@ -7,7 +7,8 @@ if (session_status() === PHP_SESSION_NONE) {
 /**
  * @return bool
  */
-function esta_logado(): bool {
+function esta_logado(): bool
+{
     return isset($_SESSION['id_usuario']);
 }
 
@@ -15,7 +16,8 @@ function esta_logado(): bool {
  * @param string $url_login
  * @return void
  */
-function exigir_login(string $url_login = '/CheckLista/paginas/autenticacao/login.php') {
+function exigir_login(string $url_login = '/CheckLista/paginas/autenticacao/login.php')
+{
     if (!esta_logado()) {
         header("Location: $url_login");
         exit;
@@ -25,14 +27,16 @@ function exigir_login(string $url_login = '/CheckLista/paginas/autenticacao/logi
 /**
  * @return int|null
  */
-function usuario_logado_id() {
+function usuario_logado_id()
+{
     return $_SESSION['id_usuario'] ?? null;
 }
 
 /**
  * @return void
  */
-function logout() {
+function logout()
+{
     session_unset();
     session_destroy();
     header("Location: /CheckLista/paginas/autenticacao/login.php");

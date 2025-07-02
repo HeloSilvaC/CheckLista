@@ -16,11 +16,11 @@ $listas = $checklist->getResult();
 
 ?>
 
-
 <div class="container mt-5">
     <h2 class="text-center mb-4">Minhas Listas</h2>
     <div class="text-end mb-3">
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovaLista">+ Adicionar Lista</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovaLista">+ Adicionar Lista
+        </button>
     </div>
     <?php if (empty($listas)): ?>
         <div class="alert alert-info text-center">Você ainda não possui nenhuma lista.</div>
@@ -33,13 +33,15 @@ $listas = $checklist->getResult();
                             <h5 class="card-title"><?= htmlspecialchars($lista['titulo']) ?></h5>
                         </div>
                         <div class="card-body">
-                            <p class="card-text"><?= nl2br(htmlspecialchars(substr($lista['descricao'], 0, 100))) ?>...</p>
+                            <p class="card-text"><?= nl2br(htmlspecialchars(substr($lista['descricao'], 0, 100))) ?>
+                                ...</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
                             <small class="text-muted">
                                 <?= date('d/m/Y', strtotime($lista['data_criacao'] ?? 'now')) ?>
                             </small>
-                            <a href="visualizar.php?id=<?= $lista['id_checklist'] ?>" class="btn btn-sm btn-primary">Ver</a>
+                            <a href="visualizar.php?id=<?= $lista['id_checklist'] ?>"
+                               class="btn btn-sm btn-primary">Ver</a>
                         </div>
                     </div>
                 </div>

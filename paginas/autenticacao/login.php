@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../autoload.php';
 carregarArquivo('/includes/cabecalho.php');
 
-if (esta_logado()){
+if (esta_logado()) {
     header('Location: /CheckLista/paginas/home.php');
 }
 

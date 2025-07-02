@@ -2,7 +2,8 @@
 
 define('BASE_PATH', realpath(__DIR__) . '/');
 
-function carregarArquivo($caminhoRelativo) {
+function carregarArquivo($caminhoRelativo)
+{
     $caminhoAbsoluto = BASE_PATH . ltrim($caminhoRelativo, '/');
     if (!file_exists($caminhoAbsoluto)) {
         throw new RuntimeException("Arquivo não encontrado: " . $caminhoRelativo);

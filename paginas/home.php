@@ -20,7 +20,9 @@ $readTarefas = new Read();
 $readTarefas->execute("tarefas", ["id_usuario" => $id_usuario]);
 $tarefas = $readTarefas->getResult();
 
-$pendentes = array_filter($tarefas, fn($t) => $t['concluida'] == 0);
+$pendentes = array_filter($tarefas, function ($t) {
+    return $t['concluida'] == 0;
+});
 
 $recentes = array_filter($listas, function ($l) {
     return isset($l['criado_em']) && strtotime($l['criado_em']) >= strtotime('-7 days');
@@ -127,7 +129,7 @@ foreach ($listas as $lista) {
 
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Checklists com Mais Tarefas</h5>
+            <h5 class="mb-0">Checklists com mais tarefas</h5>
         </div>
         <div class="card-body">
             <?php if ($checklistsComMaisTarefas): ?>

@@ -7,7 +7,9 @@ if (!esta_logado()) {
 }
 
 carregarArquivo('/includes/cabecalho.php');
+
 use models\Usuarios;
+
 $mensagem = $_SESSION['mensagem'] ?? null;
 $tipo = $_SESSION['tipo'] ?? null;
 
@@ -16,7 +18,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
 $id_usuario = usuario_logado_id();
 
 $usuarios = new Usuarios();
-$usuarios ->read(['idUsuario' => $id_usuario]);
+$usuarios->read(['idUsuario' => $id_usuario]);
 $usuario = $usuarios->getResult()[0];
 
 
@@ -55,17 +57,21 @@ $usuario = $usuarios->getResult()[0];
                         <div class="row mb-3">
                             <div class="col-md-13">
                                 <label for="nome" class="form-label">Nome</label>
-                                <input type="text" name="nome" class="form-control" id="nome" placeholder="Seu nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>">
+                                <input type="text" name="nome" class="form-control" id="nome" placeholder="Seu nome"
+                                       value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="email" class="form-label">E-mail</label>
-                                <input type="email" name="email" class="form-control" id="email" placeholder="email@exemplo.com" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>">
+                                <input type="email" name="email" class="form-control" id="email"
+                                       placeholder="email@exemplo.com"
+                                       value="<?= htmlspecialchars($usuario['email'] ?? '') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="senha" class="form-label">Nova Senha</label>
-                                <input type="password" name="senha" class="form-control" id="senha" placeholder="Digite nova senha (opcional)">
+                                <input type="password" name="senha" class="form-control" id="senha"
+                                       placeholder="Digite nova senha (opcional)">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success w-100">Salvar Alterações</button>
