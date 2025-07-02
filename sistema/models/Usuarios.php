@@ -92,6 +92,22 @@ class Usuarios
     }
 
     /**
+     * @param array $criterios
+     * @return bool
+     */
+    public function read(array $criterios)
+    {
+        $read = new Read();
+        if ($read->execute('usuarios', $criterios)) {
+            $this->resultado = $read->getResult();
+            return true;
+        } else {
+            $this->erro = $read->getError();
+            return false;
+        }
+    }
+
+    /**
      * @return mixed
      */
     public function getResult()
