@@ -31,18 +31,16 @@ if (!$idChecklist || empty($descricao)) {
     exit;
 }
 
-$descricaoSegura = htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8');
-
 try {
     $tarefa = new Tarefas();
 
     $proximaOrdem = $tarefa->getProximaOrdem($idChecklist);
 
-    if ($tarefa->create($idChecklist, $descricaoSegura, $proximaOrdem)) {
+    if ($tarefa->create($idChecklist, $descricao, $proximaOrdem)) {
             $response['success'] = true;
             $response['message'] = 'Tarefa criada com sucesso!';
             $response['id'] = $tarefa->getResult();
-            $response['descricao'] = $descricaoSegura;
+            $response['descricao'] = $descricao;
     } else {
         $response['message'] = $tarefa->getError() ?? 'Erro ao salvar a tarefa no banco de dados.';
     }

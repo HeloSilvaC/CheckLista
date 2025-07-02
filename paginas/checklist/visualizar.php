@@ -87,7 +87,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
         <h4 class="mb-3">Tarefas</h4>
 
         <div class="input-group mb-3">
-            <input type="text" id="nova-tarefa-input" class="form-control" placeholder="Adicionar uma nova tarefa e pressionar Enter...">
+            <input type="text" autocomplete="off" id="nova-tarefa-input" class="form-control" placeholder="Adicionar uma nova tarefa...">
             <button class="btn btn-primary" type="button" id="add-tarefa-btn">
                 <i class="fas fa-plus"></i> Adicionar
             </button>
@@ -129,6 +129,12 @@ carregarArquivo('includes/rodape.php'  );
         const addTarefaBtn = document.getElementById('add-tarefa-btn');
         const idChecklist = <?= json_encode($id_checklist) ?>;
 
+        window.addEventListener('pageshow', () => {
+            inputTarefa.value = '';
+            inputTarefa.removeAttribute('autocomplete');
+        });
+
+
         new Sortable(listaTarefasEl, {
             handle: '.drag-handle',
             animation: 150,
@@ -140,9 +146,12 @@ carregarArquivo('includes/rodape.php'  );
         inputTarefa.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                adicionarTarefa();
+                if (inputTarefa.value.trim() !== '') {
+                    adicionarTarefa();
+                }
             }
         });
+
 
         function salvarNovaOrdem() {
             const ordemIds = Array.from(listaTarefasEl.children)
@@ -169,6 +178,12 @@ carregarArquivo('includes/rodape.php'  );
 
         function adicionarTarefa() {
             const descricao = inputTarefa.value.trim();
+
+            if (!descricao) {
+                console.warn('Tentativa de criar tarefa com descrição vazia.');
+                return;
+            }
+
             if (!descricao) {
                 Swal.fire('Atenção', 'Por favor, insira uma descrição para a nova tarefa.', 'warning');
                 return;
@@ -189,7 +204,9 @@ carregarArquivo('includes/rodape.php'  );
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    console.log('Resposta do servidor:', data);
+
+                    if (data.success && data.id && data.descricao) {
                         const msgVazia = document.getElementById('lista-vazia-msg');
                         if (msgVazia) msgVazia.remove();
 
@@ -213,7 +230,6 @@ carregarArquivo('includes/rodape.php'  );
                         Swal.fire('Erro', 'Erro ao adicionar tarefa: ' + data.message, 'error');
                     }
                 })
-
                 .catch(error => {
                     Swal.fire('Erro', 'Erro de conexão ao adicionar tarefa.', 'error');
                 })
