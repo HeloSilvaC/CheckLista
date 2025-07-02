@@ -4,6 +4,7 @@ namespace models;
 
 use crud\Create;
 use crud\Read;
+use crud\Update;
 
 /**
  * Usuarios
@@ -107,6 +108,57 @@ class Usuarios
         }
     }
 
+    public function update($id_usuario, $nome, $email, $senha)
+    {
+        $read = new Read();
+        if (!$read->execute('usuarios', ['id_usuario' => $id_usuario])) {
+            $this->erro = "Usuário não encontrado.";
+            return false;
+        }
+        $usuarioAtual = $read->getResult()[0];
+
+        $read->execute('usuarios', ['email' => $email]);
+        if ($read->getRowCount() > 0) {
+            $usuarioExistente = $read->getResult()[0];
+            if ($usuarioExistente['id_usuario'] != $id_usuario) {
+                $this->erro = "Este e-mail já está em uso por outro usuário.";
+                return false;
+            }
+        }
+
+        $senhaHash = !empty($senha) ? password_hash($senha, PASSWORD_DEFAULT) : null;
+        $senhaIgual = empty($senha) || password_verify($senha, $usuarioAtual['senha']);
+
+        if (
+            $nome === $usuarioAtual['nome'] &&
+            $email === $usuarioAtual['email'] &&
+            $senhaIgual
+        ) {
+            $this->erro = "Você precisa alterar pelo menos um campo.";
+            return false;
+        }
+
+        $dados = [
+            'nome' => $nome,
+            'email' => $email,
+        ];
+
+        if (!empty($senha)) {
+            $dados['senha'] = $senhaHash;
+        }
+
+        $update = new Update();
+        if ($update->execute('usuarios', $dados, ['id_usuario' => $id_usuario])) {
+            $this->resultado = $update->getResult();
+            $_SESSION['nome_usuario'] = $nome;
+            return true;
+        } else {
+            $this->erro = $update->getError();
+            return false;
+        }
+    }
+
+
     /**
      * @return mixed
      */
@@ -121,5 +173,5 @@ class Usuarios
     public function getError()
     {
         return $this->erro;
-    }
+       }
 }
