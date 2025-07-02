@@ -1,11 +1,13 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-class ConexaoBD {
+class ConexaoBD
+{
     private static $instancia;
     private $conexao;
 
-    private function __construct() {
+    private function __construct()
+    {
         try {
             $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
             $this->conexao = new PDO($dsn, DB_USER, DB_PASS, [
@@ -22,18 +24,21 @@ class ConexaoBD {
         }
     }
 
-    public static function getInstancia() {
+    public static function getInstancia()
+    {
         if (!isset(self::$instancia)) {
             self::$instancia = new self();
         }
         return self::$instancia;
     }
 
-    public function getConexao() {
+    public function getConexao()
+    {
         return $this->conexao;
     }
 }
 
-function obterConexao() {
+function obterConexao()
+{
     return ConexaoBD::getInstancia()->getConexao();
 }

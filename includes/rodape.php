@@ -13,8 +13,10 @@
                 <h5 class="fw-bold">Links</h5>
                 <ul class="list-unstyled">
                     <li><a href="/CheckLista/paginas/home.php" class="text-white text-decoration-none">Início</a></li>
-                    <li><a href="/CheckLista/paginas/checklist/listar.php" class="text-white text-decoration-none">Listas</a></li>
-                    <li><a href="/CheckLista/paginas/tarefas/listar.php" class="text-white text-decoration-none">Tarefas</a></li>
+                    <li><a href="/CheckLista/paginas/checklist/listar.php" class="text-white text-decoration-none">Listas</a>
+                    </li>
+                    <li><a href="/CheckLista/paginas/tarefas/listar.php"
+                           class="text-white text-decoration-none">Tarefas</a></li>
                 </ul>
             </div>
 
@@ -22,7 +24,8 @@
                 <h5 class="fw-bold">Conta</h5>
                 <ul class="list-unstyled">
                     <li><a href="perfil.php" class="text-white text-decoration-none">Perfil</a></li>
-                    <li><a href="/CheckLista/paginas/autenticacao/logout.php" class="text-white text-decoration-none">Sair</a></li>
+                    <li><a href="/CheckLista/paginas/autenticacao/logout.php" class="text-white text-decoration-none">Sair</a>
+                    </li>
                 </ul>
             </div>
 

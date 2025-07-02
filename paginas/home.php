@@ -7,20 +7,22 @@ if (!esta_logado()) {
     exit;
 }
 
-use models\Checklist;
+use models\Checklists;
 use crud\Read;
 
-$usuario_id = usuario_logado_id();
+$id_usuario = usuario_logado_id();
 
-$checklistModel = new Checklist();
-$checklistModel->read(['idUsuario' => $usuario_id]);
+$checklistModel = new Checklists();
+$checklistModel->read(['id_usuario' => $id_usuario]);
 $listas = $checklistModel->getResult();
 
 $readTarefas = new Read();
-$readTarefas->execute("tarefas", ["idUsuario" => $usuario_id]);
+$readTarefas->execute("tarefas", ["id_usuario" => $id_usuario]);
 $tarefas = $readTarefas->getResult();
 
-$pendentes = array_filter($tarefas, fn($t) => $t['concluida'] == 0);
+$pendentes = array_filter($tarefas, function ($t) {
+    return $t['concluida'] == 0;
+});
 
 $recentes = array_filter($listas, function ($l) {
     return isset($l['criado_em']) && strtotime($l['criado_em']) >= strtotime('-7 days');
@@ -28,7 +30,7 @@ $recentes = array_filter($listas, function ($l) {
 
 $checklistsComMaisTarefas = [];
 foreach ($tarefas as $tarefa) {
-    $id = $tarefa['idChecklist'];
+    $id = $tarefa['id_checklist'];
     if (!isset($checklistsComMaisTarefas[$id])) {
         $checklistsComMaisTarefas[$id] = 0;
     }
@@ -37,7 +39,7 @@ foreach ($tarefas as $tarefa) {
 
 $titulosChecklist = [];
 foreach ($listas as $lista) {
-    $titulosChecklist[$lista['idChecklist']] = $lista['titulo'];
+    $titulosChecklist[$lista['id_checklist']] = $lista['titulo'];
 }
 ?>
 
@@ -79,12 +81,12 @@ foreach ($listas as $lista) {
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Últimos Checklists Criados</h5>
+            <h5 class="mb-0">Últimos checklists criados</h5>
         </div>
         <div class="card-body">
             <?php
             usort($listas, function ($a, $b) {
-                return strtotime($b['criado_em'] ?? '1900-01-01') - strtotime($a['criado_em'] ?? '1900-01-01');
+                return strtotime($b['data_criacao'] ?? '1900-01-01') - strtotime($a['data_criacao'] ?? '1900-01-01');
             });
             $ultimos = array_slice($listas, 0, 5);
 
@@ -92,7 +94,7 @@ foreach ($listas as $lista) {
                 echo '<ul class="list-group list-group-flush">';
                 foreach ($ultimos as $l):
                     $titulo = htmlspecialchars($l['titulo']);
-                    $data = isset($l['criado_em']) ? date('d/m/Y H:i', strtotime($l['criado_em'])) : 'Sem data';
+                    $data = isset($l['data_criacao']) ? date('d/m/Y H:i', strtotime($l['data_criacao'])) : 'Sem data';
                     echo "<li class='list-group-item d-flex justify-content-between align-items-center'>
                             <span>$titulo</span>
                             <small class='text-muted'>$data</small>
@@ -108,7 +110,7 @@ foreach ($listas as $lista) {
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Tarefas Pendentes</h5>
+            <h5 class="mb-0">Tarefas pendentes</h5>
         </div>
         <div class="card-body">
             <?php
@@ -127,7 +129,7 @@ foreach ($listas as $lista) {
 
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Checklists com Mais Tarefas</h5>
+            <h5 class="mb-0">Checklists com mais tarefas</h5>
         </div>
         <div class="card-body">
             <?php if ($checklistsComMaisTarefas): ?>

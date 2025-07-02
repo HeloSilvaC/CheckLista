@@ -4,12 +4,12 @@ require_once __DIR__ . '/../../autoload.php';
 carregarArquivo('/includes/cabecalho.php');
 exigir_login();
 
-use models\Checklist;
+use models\Checklists;
 
-$usuario_id = usuario_logado_id();
+$id_usuario = usuario_logado_id();
 
-$checklist = new Checklist();
-$checklist->read(['idUsuario' => $usuario_id]);
+$checklist = new Checklists();
+$checklist->read(['idUsuario' => $id_usuario]);
 $listas = $checklist->getResult();
 
 $mensagem = $_SESSION['mensagem'] ?? null;

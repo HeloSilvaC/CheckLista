@@ -72,8 +72,8 @@ class Usuarios
                         session_start();
                     }
 
-                    $_SESSION['usuario_id'] = $usuario['idUsuario'];
-                    $_SESSION['usuario_nome'] = $usuario['nome'];
+                    $_SESSION['id_usuario'] = $usuario['id_usuario'];
+                    $_SESSION['nome_usuario'] = $usuario['nome'];
 
                     $this->resultado = $usuario;
                     return true;
@@ -87,6 +87,22 @@ class Usuarios
             }
         } catch (\PDOException $e) {
             $this->erro = "Erro: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @param array $criterios
+     * @return bool
+     */
+    public function read(array $criterios)
+    {
+        $read = new Read();
+        if ($read->execute('usuarios', $criterios)) {
+            $this->resultado = $read->getResult();
+            return true;
+        } else {
+            $this->erro = $read->getError();
             return false;
         }
     }
