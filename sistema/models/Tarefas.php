@@ -152,6 +152,27 @@ class Tarefas
         return $this->update($id_tarefa, $dados);
     }
 
+
+    public function softDeleteByChecklist($id_checklist, $id_usuario): bool
+    {
+        $update = new Update();
+        $dados = [
+            'deletada' => 1
+        ];
+        $condicoes = [
+            'id_checklist' => $id_checklist,
+            'id_usuario' => $id_usuario
+        ];
+
+        if ($update->execute('tarefas', $dados, $condicoes)) {
+            $this->resultado = $update->getResult();
+            return true;
+        } else {
+            $this->erro = $update->getError();
+            return false;
+        }
+    }
+
     /**
      * @return mixed
      */

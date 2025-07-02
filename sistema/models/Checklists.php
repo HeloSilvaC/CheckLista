@@ -4,6 +4,7 @@ namespace models;
 
 use crud\Create;
 use crud\Read;
+use crud\Update;
 
 /**
  * Checklists
@@ -50,6 +51,8 @@ class Checklists
      */
     public function read(array $criterios)
     {
+        $criterios['deletada'] = 0;
+
         $read = new Read();
         if ($read->execute('checklists', $criterios)) {
             $this->resultado = $read->getResult();
@@ -88,6 +91,30 @@ ORDER BY c.data_criacao DESC, t.ordem ASC
             return true;
         } else {
             $this->erro = $read->getError();
+            return false;
+        }
+    }
+
+
+    public function softDelete($id_checklist, $id_usuario): bool
+    {
+        $update = new Update();
+        $dados = [
+            'deletada' => 1,
+            'data_exclusao' => date('Y-m-d H:i:s'),
+            'atualizado_por' => $id_usuario,
+            'ultima_atualizacao' => date('Y-m-d H:i:s')
+        ];
+        $condicoes = [
+            'id_checklist' => $id_checklist,
+            'id_usuario' => $id_usuario
+        ];
+
+        if ($update->execute('checklists', $dados, $condicoes)) {
+            $this->resultado = $update->getResult();
+            return true;
+        } else {
+            $this->erro = $update->getError();
             return false;
         }
     }
