@@ -41,11 +41,28 @@ $titulosChecklist = [];
 foreach ($listas as $lista) {
     $titulosChecklist[$lista['id_checklist']] = $lista['titulo'];
 }
+
+$mensagem = $_SESSION['mensagem'] ?? null;
+$tipo = $_SESSION['tipo'] ?? null;
+
+unset($_SESSION['mensagem'], $_SESSION['tipo']);
+
 ?>
+
+<?php if ($mensagem): ?>
+    <script>
+        Swal.fire({
+            icon: '<?= $tipo ?>',
+            title: '<?= $mensagem ?>',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>
+<?php endif; ?>
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Olá, <?= htmlspecialchars($_SESSION['usuario_nome']) ?? "Usuário" ?> 👋</h2>
+        <h2 class="mb-0">Olá, <?= htmlspecialchars($_SESSION['nome_usuario']) ?? "Usuário" ?> 👋</h2>
         <div>
             <a href="/CheckLista/paginas/checklist/listar.php" class="btn btn-success me-2">Novo Checklist</a>
             <a href="/CheckLista/paginas/tarefas/listar.php" class="btn btn-primary">Nova Tarefa</a>

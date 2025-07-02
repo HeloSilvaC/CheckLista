@@ -18,9 +18,8 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
 $id_usuario = usuario_logado_id();
 
 $usuarios = new Usuarios();
-$usuarios->read(['idUsuario' => $id_usuario]);
+$usuarios->read(['id_usuario' => $id_usuario]);
 $usuario = $usuarios->getResult()[0];
-
 
 ?>
 
@@ -53,7 +52,7 @@ $usuario = $usuarios->getResult()[0];
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body p-4">
                     <h5 class="mb-4 fw-semibold">Informações Pessoais</h5>
-                    <form method="post" action="/CheckLista/sistema/acoes/editar_perfil.php">
+                    <form method="post" action="/CheckLista/sistema/acoes/usuarios/editar_perfil.php">
                         <div class="row mb-3">
                             <div class="col-md-13">
                                 <label for="nome" class="form-label">Nome</label>
