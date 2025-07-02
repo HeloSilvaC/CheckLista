@@ -15,10 +15,10 @@ $tipo = $_SESSION['tipo'] ?? null;
 
 unset($_SESSION['mensagem'], $_SESSION['tipo']);
 
-$usuario_id = usuario_logado_id();
+$id_usuario = usuario_logado_id();
 
 $usuarios = new Usuarios();
-$usuarios->read(['idUsuario' => $usuario_id]);
+$usuarios->read(['id_usuario' => $id_usuario]);
 $usuario = $usuarios->getResult()[0];
 
 ?>
@@ -40,7 +40,7 @@ $usuario = $usuarios->getResult()[0];
 
 <div class="text-center mt-5">
 
-    <h1 class="fw-bold display-6"><?= htmlspecialchars($usuario['nome'] ?? $_SESSION['usuario_nome']) ?></h1>
+    <h1 class="fw-bold display-6"><?= htmlspecialchars($usuario['nome'] ?? $_SESSION['nome_usuario']) ?></h1>
 
 </div>
 
@@ -53,7 +53,7 @@ $usuario = $usuarios->getResult()[0];
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nome Completo:</label>
-                        <p class="form-control-plaintext"><?= htmlspecialchars($usuario['nome'] ?? $_SESSION['usuario_nome']) ?></p>
+                        <p class="form-control-plaintext"><?= htmlspecialchars($usuario['nome'] ?? $_SESSION['nome_usuario']) ?></p>
                     </div>
 
                     <div class="mb-3">

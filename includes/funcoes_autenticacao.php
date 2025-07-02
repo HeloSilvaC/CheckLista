@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
  * @return bool
  */
 function esta_logado(): bool {
-    return isset($_SESSION['usuario_id']);
+    return isset($_SESSION['id_usuario']);
 }
 
 /**
@@ -26,7 +26,7 @@ function exigir_login(string $url_login = '/CheckLista/paginas/autenticacao/logi
  * @return int|null
  */
 function usuario_logado_id() {
-    return $_SESSION['usuario_id'] ?? null;
+    return $_SESSION['id_usuario'] ?? null;
 }
 
 /**

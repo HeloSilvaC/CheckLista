@@ -57,8 +57,8 @@
                         <?php echo $_SESSION['usuario_nome'] ?? 'Usuário'; ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href=""><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
-                        <li><a class="dropdown-item" href=""><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                        <li><a class="dropdown-item" href="/CheckLista/paginas/perfil/vizualizar.php"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
+                        <li><a class="dropdown-item" href="/CheckLista/paginas/perfil/editar.php"><i class="bi bi-gear me-2"></i>Configurações</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
