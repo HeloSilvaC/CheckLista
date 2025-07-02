@@ -4,14 +4,14 @@ require_once __DIR__ . '/../../autoload.php';
 carregarArquivo('/includes/cabecalho.php');
 exigir_login();
 
-use models\Checklist;
+use models\Checklists;
 
-$usuario_id = usuario_logado_id();
+$id_usuario = usuario_logado_id();
 
 $id_lista = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-$checklist = new Checklist();
-$checklist->read(['idChecklist' => $id_lista]);
+$checklist = new Checklists();
+$checklist->read(['id_checklist' => $id_lista]);
 $listas = $checklist->getResult();
 
 ?>
@@ -39,7 +39,7 @@ $listas = $checklist->getResult();
                             <small class="text-muted">
                                 <?= date('d/m/Y', strtotime($lista['data_criacao'] ?? 'now')) ?>
                             </small>
-                            <a href="visualizar.php?id=<?= $lista['idChecklist'] ?>" class="btn btn-sm btn-primary">Ver</a>
+                            <a href="visualizar.php?id=<?= $lista['id_checklist'] ?>" class="btn btn-sm btn-primary">Ver</a>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 <?php
 require_once '../../autoload.php';
 
-use models\Checklist;
+use models\Checklists;
 
 exigir_login();
 
@@ -12,7 +12,7 @@ if ($titulo === '' || $descricao === '') {
     die("Campos obrigatórios não preenchidos.");
 }
 
-$checklist = new Checklist();
+$checklist = new Checklists();
 if ($checklist->create($titulo, $descricao)) {
     $_SESSION['mensagem'] = "Lista criada com sucesso!";
     $_SESSION['tipo'] = 'success';

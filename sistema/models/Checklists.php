@@ -6,9 +6,9 @@ use crud\Create;
 use crud\Read;
 
 /**
- * Checklist
+ * Checklists
  */
-class Checklist
+class Checklists
 {
     /**
      * @var
@@ -26,16 +26,16 @@ class Checklist
      */
     public function create($titulo, $descricao)
     {
-        $usuario_id = usuario_logado_id();
+        $id_usuario = usuario_logado_id();
 
         $dados = [
             'titulo' => $titulo,
             'descricao' => $descricao,
-            'idUsuario' => $usuario_id
+            'id_usuario' => $id_usuario
         ];
 
         $create = new Create();
-        if ($create->execute('checklist', $dados)) {
+        if ($create->execute('checklists', $dados)) {
             $this->resultado = $create->getResult();
             return true;
         } else {
@@ -51,7 +51,7 @@ class Checklist
     public function read(array $criterios)
     {
         $read = new Read();
-        if ($read->execute('checklist', $criterios)) {
+        if ($read->execute('checklists', $criterios)) {
             $this->resultado = $read->getResult();
             return true;
         } else {
