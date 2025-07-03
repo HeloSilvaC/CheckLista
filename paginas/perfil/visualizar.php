@@ -34,14 +34,8 @@ $usuario = $usuarios->getResult()[0];
     </script>
 <?php endif; ?>
 
-<div class="cover">
-    <button class="btn btn-light position-absolute top-0 end-0 m-3">Editar Capa</button>
-</div>
-
 <div class="text-center mt-5">
-
     <h1 class="fw-bold display-6"><?= htmlspecialchars($usuario['nome'] ?? $_SESSION['nome_usuario']) ?></h1>
-
 </div>
 
 <div class="container mb-5">
