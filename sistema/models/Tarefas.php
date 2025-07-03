@@ -116,9 +116,6 @@ class Tarefas
 
         $condicoes = ['id_tarefa' => $id_tarefa];
 
-        $id_usuario = usuario_logado_id();
-        $condicoes['id_usuario'] = $id_usuario;
-
         if ($update->execute('tarefas', $dados, $condicoes)) {
             $this->resultado = $update->getResult();
             return true;

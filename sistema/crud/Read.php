@@ -76,15 +76,12 @@ class Read
     {
         try {
             $conn = obterConexao();
-            $stmt = $conn->prepare($sql);
 
-            foreach ($params as $chave => $valor) {
-                $stmt->bindValue(is_string($chave) ? $chave : ($chave + 1), $valor);
-            }
+            $this->stmt = $conn->prepare($sql);
 
-            if ($stmt->execute()) {
-                $this->resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $this->rowCount = $stmt->rowCount();
+            if ($this->stmt->execute($params)) {
+                $this->resultado = $this->stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $this->rowCount = $this->stmt->rowCount();
                 return true;
             } else {
                 $this->erro = "Erro ao executar query.";
