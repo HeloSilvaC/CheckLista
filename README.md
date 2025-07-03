@@ -26,6 +26,10 @@ O projeto utiliza as seguintes tecnologias:
 ✅ Interface intuitiva.  
 ✅ Gerenciamento eficiente de anotações.
 
+## 🖼️ Interface
+| Home |
+![image](https://github.com/user-attachments/assets/b589752d-5dda-4968-af1d-b5f82021c847)
+
 ## 📌 Como Executar o Projeto
 
 ### 🔧 Pré-requisitos
