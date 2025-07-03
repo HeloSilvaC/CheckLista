@@ -158,6 +158,19 @@ class Usuarios
         }
     }
 
+    public function listarTodosExcetoLogado($id_usuario_logado)
+    {
+        $sql = "SELECT id_usuario, nome FROM usuarios WHERE id_usuario != :id_usuario_logado ORDER BY nome ASC";
+
+        $read = new Read();
+        if ($read->query($sql, [':id_usuario_logado' => $id_usuario_logado])) {
+            $this->resultado = $read->getResult();
+            return true;
+        } else {
+            $this->erro = $read->getError();
+            return false;
+        }
+    }
 
     /**
      * @return mixed

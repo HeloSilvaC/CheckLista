@@ -9,6 +9,7 @@ if (!esta_logado()) {
 
 use models\Checklists;
 use crud\Read;
+use models\Compartilhamentos;
 
 $id_usuario = usuario_logado_id();
 
@@ -33,6 +34,12 @@ $pendentes = array_filter($tarefas, function ($t) {
 $recentes = array_filter($listas, function ($l) {
     return strtotime($l['data_criacao']) >= strtotime('-7 days');
 });
+
+$compartilhamentoModel = new Compartilhamentos();
+$checklists_compartilhados = [];
+if ($compartilhamentoModel->listarChecklistsCompartilhadasComigo($id_usuario)) {
+    $checklists_compartilhados = $compartilhamentoModel->getResult();
+}
 
 $checklistsComMaisTarefas = [];
 foreach ($tarefas as $tarefa) {
@@ -191,6 +198,36 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                             </ul>
                         <?php else: ?>
                             <p class="text-muted mb-0">Nenhum dado disponível.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Checklists Compartilhadas Comigo 🤝</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($checklists_compartilhados)): ?>
+                            <ul class="list-group list-group-flush">
+                                <?php foreach (array_slice($checklists_compartilhados, 0, 5) as $checklist): ?>
+                                    <li class='list-group-item d-flex justify-content-between align-items-center'>
+                                        <div>
+                                            <a href='/CheckLista/paginas/checklist/visualizar.php?id=<?= $checklist['id_checklist'] ?>' class='text-decoration-none fw-bold'>
+                                                <?= htmlspecialchars($checklist['titulo']) ?>
+                                            </a>
+                                            <br>
+                                            <small class='text-muted'>Compartilhado por: <?= htmlspecialchars($checklist['dono_checklist']) ?></small>
+                                        </div>
+                                        <small class='text-muted'><?= date('d/m/Y', strtotime($checklist['data_criacao'])) ?></small>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p class="text-muted mb-0">Nenhum checklist foi compartilhado com você ainda.</p>
                         <?php endif; ?>
                     </div>
                 </div>

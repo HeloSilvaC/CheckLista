@@ -66,27 +66,37 @@ class Checklists
     public function listarPorChecklistComDetalhes($id_usuario, $id_checklist): bool
     {
         $sql = "
-SELECT 
-    c.*,
-    t.id_tarefa,
-    t.descricao AS descricao_tarefa,
-    t.concluida,
-    t.ordem,
-    t.deletada AS deletada_tarefa,
-    t.data_criacao AS data_criacao_tarefa
-FROM checklists c
-LEFT JOIN tarefas t ON t.id_checklist = c.id_checklist AND t.deletada = 0
-WHERE c.id_usuario = :id_usuario
-  AND c.id_checklist = :id_checklist
-  AND c.deletada = 0
-ORDER BY c.data_criacao DESC, t.ordem ASC
-";
+        SELECT 
+            c.*,
+            t.id_tarefa,
+            t.descricao AS descricao_tarefa,
+            t.concluida,
+            t.ordem,
+            u.nome AS nome_dono
+        FROM checklists c
+        JOIN usuarios u ON c.id_usuario = u.id_usuario 
+        LEFT JOIN checklists_compartilhados cc ON c.id_checklist = cc.id_checklist AND cc.id_usuario = ?
+        LEFT JOIN tarefas t ON t.id_checklist = c.id_checklist AND t.deletada = 0
+        WHERE 
+            c.id_checklist = ?
+            AND c.deletada = 0
+            AND (
+                c.id_usuario = ?
+                OR 
+                cc.id IS NOT NULL
+            )
+        ORDER BY c.data_criacao DESC, t.ordem ASC
+    ";
 
         $read = new Read();
-        if ($read->query($sql, [
-            ':id_usuario' => $id_usuario,
-            ':id_checklist' => $id_checklist
-        ])) {
+
+        $params = [
+            $id_usuario,
+            $id_checklist,
+            $id_usuario
+        ];
+
+        if ($read->query($sql, $params)) {
             $this->resultado = $read->getResult();
             return true;
         } else {
