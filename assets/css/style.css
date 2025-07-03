@@ -38,6 +38,23 @@ main {
     opacity: 0.8;
 }
 
+
+.navbar-brand img {
+    height: 50px;
+    width: auto;
+    max-width: 90px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+
+@media (max-width: 576px) {
+    .navbar-brand img {
+        height: 32px;
+        max-width: 100px;
+    }
+}
+
 .user-avatar {
     width: 32px;
     height: 32px;
@@ -46,8 +63,9 @@ main {
     margin-right: 8px;
 }
 
-.dropdown-menu {
-    border: none;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.dropdown-menu.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 

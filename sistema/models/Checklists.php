@@ -95,6 +95,32 @@ ORDER BY c.data_criacao DESC, t.ordem ASC
         }
     }
 
+    public function update($id_checklist, $titulo, $descricao): bool
+    {
+        $id_usuario = usuario_logado_id();
+
+        $dados = [
+            'titulo' => $titulo,
+            'descricao' => $descricao,
+            'ultima_atualizacao' => date('Y-m-d H:i:s'),
+            'atualizado_por' => $id_usuario
+        ];
+
+        $condicoes = [
+            'id_checklist' => $id_checklist,
+            'id_usuario' => $id_usuario
+        ];
+
+        $update = new Update();
+        if ($update->execute('checklists', $dados, $condicoes)) {
+            $this->resultado = $update->getResult();
+            return true;
+        } else {
+            $this->erro = $update->getError();
+            return false;
+        }
+    }
+
 
     public function softDelete($id_checklist, $id_usuario): bool
     {

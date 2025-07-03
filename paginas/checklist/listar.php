@@ -52,13 +52,20 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                                 <?= date('d/m/Y', strtotime($lista['data_criacao'] ?? 'now')) ?>
                             </small>
                             <div>
-                                <a href="visualizar.php?id=<?= $lista['id_checklist'] ?>" class="btn btn-sm btn-primary me-1">Ver</a>
+                                <a href="visualizar.php?id=<?= $lista['id_checklist'] ?>" class="btn btn-sm btn-primary">Ver</a>
+                                <button type="button" class="btn btn-sm btn-info btn-editar-checklist text-white"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEditarLista"
+                                        data-id="<?= $lista['id_checklist'] ?>"
+                                        data-titulo="<?= htmlspecialchars($lista['titulo']) ?>"
+                                        data-descricao="<?= htmlspecialchars($lista['descricao']) ?>">
+                                    Editar
+                                </button>
                                 <form class="d-inline form-excluir-checklist" data-id="<?= $lista['id_checklist'] ?>">
                                     <button type="button" class="btn btn-sm btn-danger btn-confirmar-exclusao" data-id="<?= $lista['id_checklist'] ?>">Excluir</button>
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -70,7 +77,6 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
 carregarArquivo('includes/rodape.php');
 ?>
 
-<!-- Modal de Nova Lista -->
 <div class="modal fade" id="modalNovaLista" tabindex="-1" aria-labelledby="modalNovaListaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -100,8 +106,38 @@ carregarArquivo('includes/rodape.php');
     </div>
 </div>
 
+<div class="modal fade" id="modalEditarLista" tabindex="-1" aria-labelledby="modalEditarListaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="/CheckLista/sistema/acoes/checklists/atualizar_checklist.php">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarListaLabel">Editar Lista de Tarefas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit_id_checklist" name="id_checklist">
+
+                    <div class="mb-3">
+                        <label for="edit_titulo" class="form-label">Título da Lista</label>
+                        <input type="text" class="form-control" id="edit_titulo" name="titulo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_descricao" class="form-label">Descrição (Opcional)</label>
+                        <textarea class="form-control" id="edit_descricao" name="descricao" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Lógica existente para exclusão
         const botoesExcluir = document.querySelectorAll('.btn-confirmar-exclusao');
 
         botoesExcluir.forEach(btn => {
@@ -133,6 +169,28 @@ carregarArquivo('includes/rodape.php');
                         form.submit();
                     }
                 });
+            });
+        });
+
+        // NOVO: Lógica para edição
+        const botoesEditar = document.querySelectorAll('.btn-editar-checklist');
+        const modalEditarLista = document.getElementById('modalEditarLista');
+        const editIdChecklistInput = document.getElementById('edit_id_checklist');
+        const editTituloInput = document.getElementById('edit_titulo');
+        const editDescricaoTextarea = document.getElementById('edit_descricao');
+
+        // Adiciona um ouvinte de evento para cada botão de edição
+        botoesEditar.forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Pega os dados da checklist dos atributos data-* do botão
+                const id = this.getAttribute('data-id');
+                const titulo = this.getAttribute('data-titulo');
+                const descricao = this.getAttribute('data-descricao');
+
+                // Preenche os campos do modal de edição com os dados da checklist
+                editIdChecklistInput.value = id;
+                editTituloInput.value = titulo;
+                editDescricaoTextarea.value = descricao;
             });
         });
     });

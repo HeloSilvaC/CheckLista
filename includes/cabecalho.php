@@ -5,22 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CheckLista | <?php echo $pageTitle ?? 'Organize suas Tarefa'; ?></title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="/CheckLista/assets/css/style.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-whatever" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownElement = document.getElementById('navbarDropdown');
+            if (dropdownElement) {
+                const bsDropdown = new bootstrap.Dropdown(dropdownElement);
+                dropdownElement.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    bsDropdown.toggle();
+                });
+            }
+        });
+    </script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
         <a class="navbar-brand fw-bold" href="<?php echo esta_logado() ? '/CheckLista/paginas/home.php' : '/CheckLista/index.php'; ?>">
-            <i class="bi bi-check2-square me-2"></i>CheckLista
+            <img src="/CheckLista/assets/img/LOGO.png" alt="CheckLista">
         </a>
-
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -47,13 +58,13 @@
 
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown"
                            role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
                             <i class="bi bi-person-circle me-1"></i>
                             <?php echo $_SESSION['nome_usuario'] ?? 'Usuário'; ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/CheckLista/paginas/perfil/vizualizar.php">
+                            <li><a class="dropdown-item" href="/CheckLista/paginas/perfil/visualizar.php">
                                     <i class="bi bi-person me-2"></i>Meu Perfil</a>
                             </li>
                             <li><a class="dropdown-item" href="/CheckLista/paginas/perfil/editar.php">

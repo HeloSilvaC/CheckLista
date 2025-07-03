@@ -16,6 +16,7 @@ if (trim($titulo) === '') {
     header('Location: /CheckLista/paginas/checklist/listar.php');
     exit;
 }
+
 $checklist = new Checklists();
 
 if ($checklist->create($titulo, $descricao)) {

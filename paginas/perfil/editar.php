@@ -41,7 +41,7 @@ $usuario = $usuarios->getResult()[0];
 <div class="text-center mt-5">
     <h1 class="fw-bold display-6"><?= htmlspecialchars($_SESSION['nome_usuario']) ?></h1>
 
-    <a href="vizualizar.php?usuario=<?= urlencode($_SESSION['nome_usuario']) ?>" class="btn btn-primary mb-4">
+    <a href="visualizar.php?usuario=<?= urlencode($_SESSION['nome_usuario']) ?>" class="btn btn-primary mb-4">
         Visualizar Perfil
     </a>
 </div>

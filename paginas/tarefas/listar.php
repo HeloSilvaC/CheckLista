@@ -44,7 +44,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
         <div class="alert alert-info text-center">
             Você ainda não tem nenhuma tarefa cadastrada nas suas listas.
             <br>
-            <a href="index.php" class="btn btn-primary mt-3">Ver Minhas Listas</a>
+            <a href="/CheckLista/paginas/checklist/listar.php" class="btn btn-primary mt-3">Ver Minhas Listas</a>
         </div>
     <?php else: ?>
         <div class="list-group">
