@@ -119,7 +119,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
     </div>
 
     <?php if (!empty($lista['descricao'])): ?>
-        <p class="lead text-muted mt-3"><?= nl2br(htmlspecialchars($lista['descricao'])) ?></p>
+        <p class="lead text-muted mt-3"><?= (htmlspecialchars($lista['descricao'])); ?></p>
     <?php endif; ?>
 
     <div id="tarefas" class="mt-4">
