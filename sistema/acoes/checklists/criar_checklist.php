@@ -13,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$titulo = filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-$descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$titulo = trim($_POST['titulo'] ?? '');
+$descricao = trim($_POST['descricao'] ?? '');
 
 if (empty(trim($titulo))) {
     $_SESSION['mensagem'] = 'O título da lista é obrigatório.';

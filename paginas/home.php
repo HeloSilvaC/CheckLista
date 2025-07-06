@@ -155,10 +155,10 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                             $checklist_titulo = $titulosChecklist[$tarefa['id_checklist']] ?? 'Sem lista';
                             echo "<li class='list-group-item'>
                                     <div class='d-flex justify-content-between'>
-                                        <span><i class=\"bi bi-x-circle\"></i> ".htmlspecialchars($tarefa['descricao'])."</span>
+                                        <span><i class=\"bi bi-card-text\"></i> ".htmlspecialchars($tarefa['descricao'])."</span>
                                         <small class='text-muted'><i class=\"bi bi-calendar-event\"></i> ".date('d/m', strtotime($tarefa['data_criacao']))."</small>
                                     </div>
-                                    <small class='text-muted'>Lista: <i class=\"bi bi-list\"></i> ".htmlspecialchars($checklist_titulo)."</small>
+                                    <small class='text-muted'>Lista: ".htmlspecialchars($checklist_titulo)."</small>
                                   </li>";
                         endforeach;
                         echo '</ul>';
