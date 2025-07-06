@@ -28,7 +28,7 @@ O projeto utiliza as seguintes tecnologias:
 ## 🖼️ Interface
 | Home |
 | :---: |
-| ![Imagem da tela inicial do CheckLista](https://github.com/user-attachments/assets/b589752d-5dda-4968-af1d-b5f82021c847) |
+| ![Imagem da tela inicial do CheckLista](https://github.com/user-attachments/assets/b69e052a-22ed-402f-94d7-a5fd2de985be) |
 
 ## 📌 Como Executar o Projeto
 
