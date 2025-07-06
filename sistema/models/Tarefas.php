@@ -13,26 +13,25 @@ use crud\Delete;
 class Tarefas
 {
     /**
-     * @var
+     * @var mixed Armazena o resultado da última operação bem-sucedida.
      */
     private $resultado;
     /**
-     * @var
+     * @var string|null Armazena a mensagem de erro em caso de falha.
      */
     private $erro;
 
     /**
-     * Cria uma nova tarefa
+     * Cria uma nova tarefa associada a uma checklist.
      *
-     * @param $id_checklist
-     * @param $descricao
-     * @param int $ordem
-     * @return bool
+     * @param int $id_checklist ID da checklist à qual a tarefa pertence.
+     * @param string $descricao O texto da tarefa.
+     * @param int $ordem A posição da tarefa na lista.
+     * @return bool Retorna true em caso de sucesso.
      */
-    public function create($id_checklist, $descricao, int $ordem)
+    public function create($id_checklist, $descricao, int $ordem): bool
     {
         $id_usuario = usuario_logado_id();
-
         $dados = [
             'id_checklist' => $id_checklist,
             'descricao' => $descricao,
@@ -56,12 +55,12 @@ class Tarefas
     }
 
     /**
-     * Lê as tarefas com base nos critérios fornecidos
+     * Lê as tarefas com base nos critérios fornecidos, ordenadas por padrão.
      *
-     * @param array $criterios
-     * @return bool
+     * @param array $criterios Array associativo de condições para a busca.
+     * @return bool Retorna true se a leitura for bem-sucedida.
      */
-    public function read(array $criterios)
+    public function read(array $criterios): bool
     {
         $orderBy = 'ordem ASC';
         $read = new Read();
@@ -101,19 +100,16 @@ class Tarefas
         return 1;
     }
 
-
-
     /**
-     * Atualiza uma tarefa existente
+     * Atualiza os dados de uma tarefa existente.
      *
-     * @param $id_tarefa
-     * @param array $dados
-     * @return bool
+     * @param int $id_tarefa O ID da tarefa a ser atualizada.
+     * @param array $dados Os novos dados a serem salvos.
+     * @return bool Retorna true em caso de sucesso.
      */
-    public function update($id_tarefa, array $dados)
+    public function update($id_tarefa, array $dados): bool
     {
         $update = new Update();
-
         $condicoes = ['id_tarefa' => $id_tarefa];
 
         if ($update->execute('tarefas', $dados, $condicoes)) {
@@ -126,36 +122,40 @@ class Tarefas
     }
 
     /**
-     * Exclui uma tarefa (soft delete)
+     * Exclui uma tarefa (soft delete) reutilizando o método de update.
      *
-     * @param $id_tarefa
-     * @return bool
+     * @param int $id_tarefa O ID da tarefa a ser deletada.
+     * @return bool Retorna true em caso de sucesso.
      */
-    public function delete($id_tarefa)
+    public function delete($id_tarefa): bool
     {
         $dados = ['deletada' => 1];
         return $this->update($id_tarefa, $dados);
     }
 
     /**
-     * Restaura uma tarefa deletada
+     * Restaura uma tarefa deletada (soft delete) reutilizando o método de update.
      *
-     * @param $id_tarefa
-     * @return bool
+     * @param int $id_tarefa O ID da tarefa a ser restaurada.
+     * @return bool Retorna true em caso de sucesso.
      */
-    public function restore($id_tarefa)
+    public function restore($id_tarefa): bool
     {
         $dados = ['deletada' => 0, 'restaurada' => 1];
         return $this->update($id_tarefa, $dados);
     }
 
-
+    /**
+     * Realiza um "soft delete" em todas as tarefas de uma checklist específica.
+     *
+     * @param int $id_checklist O ID da checklist cujas tarefas serão deletadas.
+     * @param int $id_usuario O ID do usuário (para verificação de permissão).
+     * @return bool Retorna true em caso de sucesso.
+     */
     public function softDeleteByChecklist($id_checklist, $id_usuario): bool
     {
         $update = new Update();
-        $dados = [
-            'deletada' => 1
-        ];
+        $dados = ['deletada' => 1];
         $condicoes = [
             'id_checklist' => $id_checklist,
             'id_usuario' => $id_usuario
@@ -171,6 +171,7 @@ class Tarefas
     }
 
     /**
+     * Retorna o resultado da última operação bem-sucedida.
      * @return mixed
      */
     public function getResult()
@@ -179,7 +180,8 @@ class Tarefas
     }
 
     /**
-     * @return mixed
+     * Retorna a mensagem de erro se a última operação falhou.
+     * @return string|null
      */
     public function getError()
     {

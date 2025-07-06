@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/autoload.php';
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -8,14 +11,13 @@
     <link href="assets/css/index.css" rel="stylesheet">
 </head>
 <body>
-
 <div class="hero-section text-center">
     <div class="container">
         <h1 class="display-4 fw-bold mb-4">CheckLista</h1>
         <p class="lead mb-5">Organize suas tarefas de forma simples e eficiente.</p>
         <div class="d-flex justify-content-center flex-wrap">
-            <a href="/CheckLista/paginas/autenticacao/login.php" class="btn btn-option btn-login">Fazer Login</a>
-            <a href="/CheckLista/paginas/autenticacao/cadastro.php" class="btn btn-option btn-register">Criar Conta</a>
+            <a href="<?php echo BASE_URL; ?>paginas/autenticacao/login.php" class="btn btn-option btn-login">Fazer Login</a>
+            <a href="<?php echo BASE_URL; ?>paginas/autenticacao/cadastro.php" class="btn btn-option btn-register">Criar Conta</a>
         </div>
     </div>
 </div>

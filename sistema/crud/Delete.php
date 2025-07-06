@@ -8,18 +8,24 @@ namespace crud;
 class Delete
 {
     /**
-     * @var
+     * Armazena o número de linhas afetadas pela operação de exclusão.
+     * @var int
      */
     private $resultado;
+
     /**
-     * @var
+     * Armazena a mensagem de erro em caso de falha na operação.
+     * @var string
      */
     private $erro;
 
     /**
-     * @param string $tabela
-     * @param array $condicoes
-     * @return bool
+     * Prepara e executa uma instrução SQL DELETE na tabela especificada,
+     * com base em um array de condições.
+     *
+     * @param string $tabela O nome da tabela de onde os registros serão removidos.
+     * @param array $condicoes Um array associativo para a cláusula WHERE (ex: ['id' => 1, 'status' => 'inativo']).
+     * @return bool Retorna true em caso de sucesso e false em caso de falha.
      */
     public function execute(string $tabela, array $condicoes): bool
     {
@@ -46,13 +52,14 @@ class Delete
                 return false;
             }
         } catch (\PDOException $e) {
-            $this->erro = "Erro: " . $e->getMessage();
+            $this->erro = "Erro de PDO: " . $e->getMessage();
             return false;
         }
     }
 
     /**
-     * @return mixed
+     * Retorna o número de linhas afetadas pela operação de exclusão.
+     * @return int|null
      */
     public function getResult()
     {
@@ -60,7 +67,8 @@ class Delete
     }
 
     /**
-     * @return mixed
+     * Retorna a mensagem de erro se a operação falhar.
+     * @return string|null
      */
     public function getError()
     {

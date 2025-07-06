@@ -8,19 +8,24 @@ namespace crud;
 class Update
 {
     /**
-     * @var
+     * Armazena o número de linhas afetadas pela operação de atualização.
+     * @var int
      */
     private $resultado;
+
     /**
-     * @var
+     * Armazena a mensagem de erro em caso de falha na operação.
+     * @var string
      */
     private $erro;
 
     /**
-     * @param string $tabela
-     * @param array $dados
-     * @param array $condicoes
-     * @return bool
+     * Prepara e executa uma instrução SQL UPDATE na tabela especificada.
+     *
+     * @param string $tabela A tabela a ser atualizada.
+     * @param array $dados Um array associativo com os dados a serem atualizados (SET).
+     * @param array $condicoes Um array associativo para a cláusula WHERE.
+     * @return bool Retorna true em caso de sucesso e false em caso de falha.
      */
     public function execute(string $tabela, array $dados, array $condicoes): bool
     {
@@ -56,13 +61,14 @@ class Update
                 return false;
             }
         } catch (\PDOException $e) {
-            $this->erro = "Erro: " . $e->getMessage();
+            $this->erro = "Erro de PDO: " . $e->getMessage();
             return false;
         }
     }
 
     /**
-     * @return mixed
+     * Retorna o número de linhas afetadas pela operação de atualização.
+     * @return int|null
      */
     public function getResult()
     {
@@ -70,7 +76,8 @@ class Update
     }
 
     /**
-     * @return mixed
+     * Retorna a mensagem de erro se a operação falhar.
+     * @return string|null
      */
     public function getError()
     {

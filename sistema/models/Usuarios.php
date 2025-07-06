@@ -12,21 +12,23 @@ use crud\Update;
 class Usuarios
 {
     /**
-     * @var
+     * @var mixed Armazena o resultado da última operação bem-sucedida.
      */
     private $resultado;
     /**
-     * @var
+     * @var string|null Armazena a mensagem de erro em caso de falha.
      */
     private $erro;
 
     /**
-     * @param $nome
-     * @param $email
-     * @param $senha
-     * @return bool
+     * Cria um novo usuário, verificando se o e-mail já existe e hasheando a senha.
+     *
+     * @param string $nome O nome do usuário.
+     * @param string $email O e-mail do usuário (deve ser único).
+     * @param string $senha A senha do usuário (será hasheada).
+     * @return bool Retorna true em caso de sucesso.
      */
-    public function create($nome, $email, $senha)
+    public function create($nome, $email, $senha): bool
     {
         $read = new Read();
         $read->execute('usuarios', ['email' => $email]);
@@ -55,11 +57,13 @@ class Usuarios
     }
 
     /**
-     * @param string $email
-     * @param string $senha
-     * @return bool
+     * Autentica um usuário, verifica a senha e inicia a sessão.
+     *
+     * @param string $email O e-mail fornecido para login.
+     * @param string $senha A senha fornecida para login.
+     * @return bool Retorna true se a autenticação for bem-sucedida.
      */
-    public function login($email, $senha)
+    public function login($email, $senha): bool
     {
         try {
             $read = new Read();
@@ -72,7 +76,6 @@ class Usuarios
                     if (session_status() === PHP_SESSION_NONE) {
                         session_start();
                     }
-
                     $_SESSION['id_usuario'] = $usuario['id_usuario'];
                     $_SESSION['nome_usuario'] = $usuario['nome'];
 
@@ -87,16 +90,18 @@ class Usuarios
                 return false;
             }
         } catch (\PDOException $e) {
-            $this->erro = "Erro: " . $e->getMessage();
+            $this->erro = "Erro de PDO: " . $e->getMessage();
             return false;
         }
     }
 
     /**
-     * @param array $criterios
-     * @return bool
+     * Lê usuários do banco de dados com base em um conjunto de critérios.
+     *
+     * @param array $criterios Array associativo de condições para a busca.
+     * @return bool Retorna true se a leitura for bem-sucedida.
      */
-    public function read(array $criterios)
+    public function read(array $criterios): bool
     {
         $read = new Read();
         if ($read->execute('usuarios', $criterios)) {
@@ -108,7 +113,16 @@ class Usuarios
         }
     }
 
-    public function update($id_usuario, $nome, $email, $senha)
+    /**
+     * Atualiza os dados de um usuário, com validações para e-mail e dados inalterados.
+     *
+     * @param int $id_usuario O ID do usuário a ser atualizado.
+     * @param string $nome O novo nome.
+     * @param string $email O novo e-mail.
+     * @param string $senha A nova senha (opcional).
+     * @return bool Retorna true em caso de sucesso.
+     */
+    public function update($id_usuario, $nome, $email, $senha): bool
     {
         $read = new Read();
         if (!$read->execute('usuarios', ['id_usuario' => $id_usuario])) {
@@ -129,20 +143,12 @@ class Usuarios
         $senhaHash = !empty($senha) ? password_hash($senha, PASSWORD_DEFAULT) : null;
         $senhaIgual = empty($senha) || password_verify($senha, $usuarioAtual['senha']);
 
-        if (
-            $nome === $usuarioAtual['nome'] &&
-            $email === $usuarioAtual['email'] &&
-            $senhaIgual
-        ) {
+        if ($nome === $usuarioAtual['nome'] && $email === $usuarioAtual['email'] && $senhaIgual) {
             $this->erro = "Você precisa alterar pelo menos um campo.";
             return false;
         }
 
-        $dados = [
-            'nome' => $nome,
-            'email' => $email,
-        ];
-
+        $dados = ['nome' => $nome, 'email' => $email];
         if (!empty($senha)) {
             $dados['senha'] = $senhaHash;
         }
@@ -158,7 +164,14 @@ class Usuarios
         }
     }
 
-    public function listarTodosExcetoLogado($id_usuario_logado)
+    /**
+     * Lista todos os usuários cadastrados, exceto o que está logado.
+     * Útil para a funcionalidade de compartilhamento.
+     *
+     * @param int $id_usuario_logado O ID do usuário logado.
+     * @return bool Retorna true se a consulta for bem-sucedida.
+     */
+    public function listarTodosExcetoLogado($id_usuario_logado): bool
     {
         $sql = "SELECT id_usuario, nome FROM usuarios WHERE id_usuario != :id_usuario_logado ORDER BY nome ASC";
 
@@ -173,6 +186,7 @@ class Usuarios
     }
 
     /**
+     * Retorna o resultado da última operação bem-sucedida.
      * @return mixed
      */
     public function getResult()
@@ -181,10 +195,11 @@ class Usuarios
     }
 
     /**
-     * @return mixed
+     * Retorna a mensagem de erro se a última operação falhou.
+     * @return string|null
      */
     public function getError()
     {
         return $this->erro;
-       }
+    }
 }
