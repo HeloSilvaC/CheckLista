@@ -48,7 +48,7 @@ Certifique-se de ter instalado:
    cd CheckLista
    ```
 3. Configure o banco de dados (se necessário) criando as tabelas adequadas.
-4. Configure o servidor para executar o backend (PHP ou Python).
+4. Configure o servidor para executar o backend (PHP).
 5. Abra o arquivo index.html em um navegador ou configure um servidor local para testes.
 
 💡 Desenvolvido por **Heloísa Contrera, Paola Miyuki e Elisa Hiroki** 🚀
