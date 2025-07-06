@@ -76,7 +76,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">Olá, <?= htmlspecialchars($_SESSION['nome_usuario'] ?? "Usuário") ?> 👋</h2>
             <div>
-                <a href="/CheckLista/paginas/checklist/listar.php" class="btn btn-success me-2">Novo Checklist</a>
+                <a href="/CheckLista/paginas/checklist/listar.php" class="btn btn-success me-2">Nova Lista</a>
                 <a href="/CheckLista/paginas/tarefas/listar.php" class="btn btn-primary">Nova Tarefa</a>
             </div>
         </div>
@@ -85,7 +85,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
             <div class="col-md-4">
                 <div class="card shadow-sm border-success">
                     <div class="card-body">
-                        <h5>Total de Checklists</h5>
+                        <h5>Total de Listas</h5>
                         <h3 class="text-success"><?= count($listas) ?></h3>
                     </div>
                 </div>
@@ -101,7 +101,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
             <div class="col-md-4">
                 <div class="card shadow-sm border-warning">
                     <div class="card-body">
-                        <h5>Checklists Recentes</h5>
+                        <h5>Listas Recentes</h5>
                         <h3 class="text-warning"><?= count($recentes) ?></h3>
                     </div>
                 </div>
@@ -112,7 +112,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">Últimos checklists criados</h5>
+                        <h5 class="mb-0">Últimas listas criadas</h5>
                     </div>
                     <div class="card-body">
                         <?php
@@ -133,7 +133,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                             endforeach;
                             echo '</ul>';
                         else:
-                            echo '<p class="text-muted mb-0">Nenhum checklist criado ainda.</p>';
+                            echo '<p class="text-muted mb-0">Nenhuma lista criada ainda.</p>';
                         endif;
                         ?>
                     </div>
@@ -155,13 +155,13 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                         if ($pendentes_recentes):
                             echo '<ul class="list-group list-group-flush">';
                             foreach ($pendentes_recentes as $tarefa):
-                                $checklist_titulo = $titulosChecklist[$tarefa['id_checklist']] ?? 'Sem checklist';
+                                $checklist_titulo = $titulosChecklist[$tarefa['id_checklist']] ?? 'Sem lista';
                                 echo "<li class='list-group-item'>
                                     <div class='d-flex justify-content-between'>
                                         <span>".htmlspecialchars($tarefa['descricao'])."</span>
                                         <small class='text-muted'>".date('d/m', strtotime($tarefa['data_criacao']))."</small>
                                     </div>
-                                    <small class='text-muted'>Checklist: ".htmlspecialchars($checklist_titulo)."</small>
+                                    <small class='text-muted'>Lista: ".htmlspecialchars($checklist_titulo)."</small>
                                   </li>";
                             endforeach;
                             echo '</ul>';
@@ -178,7 +178,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
             <div class="col-md-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">Checklists com mais tarefas</h5>
+                        <h5 class="mb-0">Listas com mais tarefas</h5>
                     </div>
                     <div class="card-body">
                         <?php if ($checklistsComMaisTarefas): ?>
@@ -208,7 +208,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
             <div class="col-md-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">Checklists Compartilhadas Comigo 🤝</h5>
+                        <h5 class="mb-0">Listas Compartilhadas Comigo 🤝</h5>
                     </div>
                     <div class="card-body">
                         <?php if (!empty($checklists_compartilhados)): ?>
@@ -220,14 +220,14 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                                                 <?= htmlspecialchars($checklist['titulo']) ?>
                                             </a>
                                             <br>
-                                            <small class='text-muted'>Compartilhado por: <?= htmlspecialchars($checklist['dono_checklist']) ?></small>
+                                            <small class='text-muted'>Compartilhada por: <?= htmlspecialchars($checklist['dono_checklist']) ?></small>
                                         </div>
                                         <small class='text-muted'><?= date('d/m/Y', strtotime($checklist['data_criacao'])) ?></small>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
                         <?php else: ?>
-                            <p class="text-muted mb-0">Nenhum checklist foi compartilhado com você ainda.</p>
+                            <p class="text-muted mb-0">Nenhuma lista foi compartilhada com você ainda.</p>
                         <?php endif; ?>
                     </div>
                 </div>

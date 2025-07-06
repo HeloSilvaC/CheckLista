@@ -23,7 +23,7 @@
             <div class="col-md-2 mb-4 mb-md-0">
                 <h5 class="fw-bold">Conta</h5>
                 <ul class="list-unstyled">
-                    <li><a href="perfil.php" class="text-white text-decoration-none">Perfil</a></li>
+                    <li><a href="/CheckLista/paginas/perfil/visualizar.php" class="text-white text-decoration-none">Perfil</a></li>
                     <li><a href="/CheckLista/paginas/autenticacao/logout.php" class="text-white text-decoration-none">Sair</a>
                     </li>
                 </ul>
