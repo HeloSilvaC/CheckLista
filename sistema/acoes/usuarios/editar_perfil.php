@@ -4,28 +4,40 @@ require_once '../../../autoload.php';
 
 use models\Usuarios;
 
-$nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-$senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
+exigir_login();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $_SESSION['mensagem'] = 'Método de requisição inválido.';
+    $_SESSION['tipo'] = 'error';
+    header('Location: ' . BASE_URL . 'paginas/perfil/editar.php');
+    exit;
+}
+
+$nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+$senha = $_POST['senha'] ?? '';
 $id_usuario = usuario_logado_id();
 
-if ($id_usuario && (!empty($nome) || !empty($email) || !empty($senha))){
+if (empty($nome) || empty($email)) {
+    $_SESSION['mensagem'] = "Nome e e-mail são campos obrigatórios.";
+    $_SESSION['tipo'] = 'warning';
+    header('Location: ' . BASE_URL . 'paginas/perfil/editar.php');
+    exit;
+}
+
+try {
     $usuario = new Usuarios();
     if ($usuario->update($id_usuario, $nome, $email, $senha)) {
         $_SESSION['mensagem'] = "Dados atualizados com sucesso!";
         $_SESSION['tipo'] = 'success';
-        header('Location: /CheckLista/paginas/perfil/editar.php');
-        exit;
     } else {
-        $_SESSION['mensagem'] = $usuario->getError();
+        $_SESSION['mensagem'] = $usuario->getError() ?? "Não foi possível atualizar o perfil.";
         $_SESSION['tipo'] = 'error';
-        header('Location: /CheckLista/paginas/perfil/editar.php');
-        exit;
     }
-} else {
-    $_SESSION['mensagem'] = 'Preencha todos os campos.';
-    $_SESSION['tipo'] = 'warning';
-    header('Location: /CheckLista/paginas/perfil/editar.php');
-    exit;
+} catch (Exception $e) {
+    $_SESSION['mensagem'] = "Erro crítico no servidor: " . $e->getMessage();
+    $_SESSION['tipo'] = 'error';
 }
+
+header('Location: ' . BASE_URL . 'paginas/perfil/editar.php');
+exit;

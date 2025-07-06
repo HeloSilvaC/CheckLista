@@ -22,7 +22,7 @@ CREATE TABLE checklists (
                             atualizado_por INT(11) DEFAULT NULL COMMENT 'ID do último usuário que atualizou a checklist',
                             data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Data de criação da checklist',
                             ultima_atualizacao DATETIME DEFAULT NULL COMMENT 'Última atualização feita na checklist',
-                            deletada TINYINT(1) DEFAULT 0 COMMENT '1 = checklist marcada como excluída',
+                            deletada    TINYINT(1) DEFAULT 0 COMMENT '1 = checklist marcada como excluída',
                             restaurada TINYINT(1) DEFAULT 0 COMMENT '1 = checklist foi restaurada',
                             data_exclusao DATETIME DEFAULT NULL COMMENT 'Data da exclusão (soft delete)',
                             PRIMARY KEY (id_checklist),

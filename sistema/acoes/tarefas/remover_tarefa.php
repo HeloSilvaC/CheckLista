@@ -1,18 +1,20 @@
 <?php
+
 require_once '../../../autoload.php';
-exigir_login();
 
 use models\Tarefas;
 
 header('Content-Type: application/json');
 
+exigir_login();
+
 $response = [
     'success' => false,
-    'message' => 'Erro ao remover a tarefa.',
+    'message' => 'Ocorreu um erro inesperado ao remover a tarefa.'
 ];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $response['message'] = 'Método inválido.';
+    $response['message'] = 'Método de requisição inválido.';
     echo json_encode($response);
     exit;
 }
@@ -27,18 +29,18 @@ if (!$idTarefa) {
     exit;
 }
 
-$tarefa = new Tarefas();
+try {
+    $tarefa = new Tarefas();
 
-$dados = [
-    'deletada' => 1,
-    'ultima_atualizacao' => date('Y-m-d H:i:s'),
-];
-
-if ($tarefa->update($idTarefa, $dados)) {
-    $response['success'] = true;
-    $response['message'] = 'Tarefa removida com sucesso.';
-} else {
-    $response['message'] = $tarefa->getError() ?? 'Não foi possível remover a tarefa.';
+    if ($tarefa->delete($idTarefa)) {
+        $response['success'] = true;
+        $response['message'] = 'Tarefa removida com sucesso.';
+    } else {
+        $response['message'] = $tarefa->getError() ?? 'Não foi possível remover a tarefa.';
+    }
+} catch (Exception $e) {
+    $response['message'] = "Erro crítico no servidor: " . $e->getMessage();
 }
 
 echo json_encode($response);
+exit;

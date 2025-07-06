@@ -8,18 +8,23 @@ namespace crud;
 class Create
 {
     /**
-     * @var
+     * Armazena o ID do último registro inserido em caso de sucesso.
+     * @var int|string
      */
     private $resultado;
+
     /**
-     * @var
+     * Armazena a mensagem de erro em caso de falha na operação.
+     * @var string
      */
     private $erro;
 
     /**
-     * @param string $tabela
-     * @param array $dados
-     * @return bool
+     * Prepara e executa uma instrução SQL INSERT na tabela especificada com os dados fornecidos.
+     *
+     * @param string $tabela O nome da tabela onde os dados serão inseridos.
+     * @param array $dados Um array associativo onde as chaves são as colunas e os valores são os dados.
+     * @return bool Retorna true em caso de sucesso e false em caso de falha.
      */
     public function execute(string $tabela, array $dados): bool
     {
@@ -44,12 +49,13 @@ class Create
                 return false;
             }
         } catch (\PDOException $e) {
-            $this->erro = "Erro: " . $e->getMessage();
+            $this->erro = "Erro de PDO: " . $e->getMessage();
             return false;
         }
     }
 
     /**
+     * Retorna o ID do registro inserido após uma execução bem-sucedida.
      * @return mixed
      */
     public function getResult()
@@ -58,7 +64,8 @@ class Create
     }
 
     /**
-     * @return mixed
+     * Retorna a mensagem de erro se a operação falhar.
+     * @return string|null
      */
     public function getError()
     {
