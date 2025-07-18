@@ -1,5 +1,9 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 define('BASE_PATH', realpath(__DIR__) . '/');
 
 function carregarArquivo($caminhoRelativo)
@@ -16,27 +20,17 @@ try {
     carregarArquivo('includes/funcoes_autenticacao.php');
     carregarArquivo('includes/conexao_bd.php');
 } catch (Exception $e) {
-    die("Erro ao carregar arquivos essenciais: " . $e->getMessage());
+    die("Erro fatal: " . $e->getMessage());
 }
 
+
 spl_autoload_register(function ($classe) {
-    $caminho = str_replace('\\', '/', $classe);
+    $caminhoRelativo = str_replace('\\', '/', $classe) . '.php';
+    $caminhoAbsoluto = BASE_PATH . 'sistema/' . $caminhoRelativo;
 
-    $diretorios = [
-        'sistema/models/',
-        'sistema/crud/',
-        'sistema/includes/',
-        'sistema/api/',
-        'sistema/'
-    ];
-
-    foreach ($diretorios as $dir) {
-        $arquivo = BASE_PATH . $dir . $caminho . '.php';
-        if (file_exists($arquivo)) {
-            require_once $arquivo;
-            return;
-        }
+    if (file_exists($caminhoAbsoluto)) {
+        require_once $caminhoAbsoluto;
+    } else {
+        error_log("Autoload falhou: Classe '" . $classe . "' não encontrada em '" . $caminhoAbsoluto . "'");
     }
-
-    error_log("Falha ao carregar classe: " . $classe);
 });

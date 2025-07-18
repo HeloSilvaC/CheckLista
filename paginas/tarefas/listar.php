@@ -1,8 +1,10 @@
 <?php
 require_once __DIR__ . '/../../autoload.php';
 
-carregarArquivo('/includes/cabecalho.php');
 exigir_login();
+
+carregarArquivo('/includes/cabecalho.php');
+
 
 use crud\Read;
 
@@ -37,42 +39,44 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
     </script>
 <?php endif; ?>
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Minhas Tarefas</h2>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4"><i class="bi bi-check2-all me-2"></i>Minhas Tarefas</h2>
 
-    <?php if (empty($tarefas)): ?>
-        <div class="alert alert-info text-center">
-            Você ainda não tem nenhuma tarefa cadastrada nas suas listas.
-            <br>
-            <a href="/CheckLista/paginas/checklist/listar.php" class="btn btn-primary mt-3">Ver Minhas Listas</a>
-        </div>
-    <?php else: ?>
-        <div class="list-group">
-            <?php foreach ($tarefas as $tarefa): ?>
-                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    <div class="flex-grow-1">
-                        <h5 class="mb-1"><?= htmlspecialchars($tarefa['descricao']) ?></h5>
-                        <p class="mb-1 text-muted">
-                            <small>Lista: <?= htmlspecialchars($tarefa['titulo_checklist']) ?></small>
-                        </p>
+        <?php if (empty($tarefas)): ?>
+            <div class="alert alert-light text-center border p-4">
+                <i class="bi bi-journal-check display-4 text-muted"></i>
+                <h4 class="mt-3">Nenhuma tarefa encontrada</h4>
+                <p class="text-muted">Parece que você ainda não tem tarefas em suas listas.</p>
+                <a href="<?php echo BASE_URL; ?>paginas/checklist/listar.php" class="btn btn-primary mt-2">
+                    <i class="bi bi-card-checklist me-1"></i> Ver Minhas Listas
+                </a>
+            </div>
+        <?php else: ?>
+            <div class="list-group shadow-sm">
+                <?php foreach ($tarefas as $tarefa): ?>
+                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1"></i><?= htmlspecialchars($tarefa['descricao']) ?></h5>
+                            <p class="mb-1 text-muted">
+                                <small><i class="bi bi-list-task"></i> Lista: <?= htmlspecialchars($tarefa['titulo_checklist']) ?></small>
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <?php if ($tarefa['concluida']): ?>
+                                <span class="badge bg-success me-3"><i class="bi bi-check-circle-fill me-1"></i>Concluída</span>
+                            <?php else: ?>
+                                <span class="badge bg-warning text-dark me-3"><i class="bi bi-hourglass-split me-1"></i>Pendente</span>
+                            <?php endif; ?>
+                            <a href="<?php echo BASE_URL; ?>paginas/checklist/visualizar.php?id=<?= $tarefa['id_checklist'] ?>" class="btn btn-sm btn-outline-primary" title="Ver a lista completa">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Ir para a Lista
+                            </a>
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <?php if ($tarefa['concluida']): ?>
-                            <span class="badge bg-success me-3">Concluída</span>
-                        <?php else: ?>
-                            <span class="badge bg-warning text-dark me-3">Pendente</span>
-                        <?php endif; ?>
-                        <a href="/CheckLista/paginas/checklist/visualizar.php?id=<?= $tarefa['id_checklist'] ?>" class="btn btn-sm btn-outline-primary" title="Ver a lista completa">
-                            Ir para a Lista
-                        </a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-</div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
 
 <?php
-// Carrega o rodapé da página
 carregarArquivo('includes/rodape.php');
 ?>

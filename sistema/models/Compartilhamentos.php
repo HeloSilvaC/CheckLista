@@ -5,12 +5,31 @@ namespace models;
 use crud\Create;
 use crud\Read;
 
+/**
+ * Compartilhamentos
+ */
 class Compartilhamentos
 {
+    /**
+     * @var mixed Armazena o resultado da última operação bem-sucedida.
+     */
     private $resultado;
 
+    /**
+     * @var string|null Armazena a mensagem de erro em caso de falha.
+     */
     private $erro;
 
+    /**
+     * Compartilha uma checklist com outro usuário.
+     * Realiza validações para garantir que o usuário logado é o dono da lista
+     * e que ela ainda não foi compartilhada com o mesmo destinatário.
+     *
+     * @param int $id_checklist ID da checklist a ser compartilhada.
+     * @param int $id_usuario_dono ID do usuário que está realizando a ação (dono).
+     * @param int $id_usuario_compartilhar ID do usuário que receberá o acesso.
+     * @return bool Retorna true em caso de sucesso.
+     */
     public function compartilhar($id_checklist, $id_usuario_dono, $id_usuario_compartilhar)
     {
         $readChecklist = new Read();
@@ -32,8 +51,8 @@ class Compartilhamentos
         ]);
 
         if ($readShare->getRowCount() > 0) {
-            $this->resultado = $readShare->getResult();
-            return true;
+            $this->erro = "Esta lista já foi compartilhada com o usuário selecionado.";
+            return false;
         }
 
         $dados = [
@@ -51,6 +70,12 @@ class Compartilhamentos
         }
     }
 
+    /**
+     * Busca e retorna uma lista de todos os usuários com quem uma checklist específica foi compartilhada.
+     *
+     * @param int $id_checklist O ID da checklist.
+     * @return bool Retorna true se a consulta for bem-sucedida.
+     */
     public function listarUsuariosCompartilhados($id_checklist)
     {
         $sql = "
@@ -70,6 +95,12 @@ class Compartilhamentos
         }
     }
 
+    /**
+     * Busca e retorna todas as checklists que foram compartilhadas com o usuário logado.
+     *
+     * @param int $id_usuario O ID do usuário logado.
+     * @return bool Retorna true se a consulta for bem-sucedida.
+     */
     public function listarChecklistsCompartilhadasComigo($id_usuario)
     {
         $sql = "
@@ -95,11 +126,19 @@ class Compartilhamentos
         }
     }
 
+    /**
+     * Retorna o resultado da última operação bem-sucedida.
+     * @return mixed
+     */
     public function getResult()
     {
         return $this->resultado;
     }
 
+    /**
+     * Retorna a mensagem de erro se a última operação falhou.
+     * @return string|null
+     */
     public function getError()
     {
         return $this->erro;

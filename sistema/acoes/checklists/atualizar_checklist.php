@@ -1,44 +1,44 @@
 <?php
+
 require_once '../../../autoload.php';
-session_start();
 
 use models\Checklists;
 
 exigir_login();
 
-$id_usuario = usuario_logado_id();
-
-$id_checklist = $_POST['id_checklist'] ?? null;
-$titulo = $_POST['titulo'] ?? null;
-$descricao = $_POST['descricao'] ?? null;
-
-if (!$id_checklist) {
-    $_SESSION['mensagem'] = "ID da checklist não foi enviado para atualização.";
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $_SESSION['mensagem'] = 'Método de requisição inválido.';
     $_SESSION['tipo'] = 'error';
-    header('Location: /CheckLista/paginas/checklist/listar.php');
+    header('Location: ' . BASE_URL . 'paginas/checklist/listar.php');
+
     exit;
 }
 
-if (empty($titulo) || empty($descricao)) {
-    $_SESSION['mensagem'] = "Título e descrição da checklist são obrigatórios.";
+$id_checklist = filter_input(INPUT_POST, 'id_checklist', FILTER_VALIDATE_INT);
+$titulo = filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+if (!$id_checklist || empty(trim($titulo))) {
+    $_SESSION['mensagem'] = "Dados inválidos. O título da lista é obrigatório.";
     $_SESSION['tipo'] = 'error';
-    header('Location: /CheckLista/paginas/checklist/listar.php');
+    header('Location: ' . BASE_URL . 'paginas/checklist/listar.php');
     exit;
 }
 
-$checklist = new Checklists();
-
-$success = $checklist->update($id_checklist, $titulo, $descricao);
-
-
-if ($success) {
-    $_SESSION['mensagem'] = "Checklist atualizada com sucesso!";
-    $_SESSION['tipo'] = 'success';
-} else {
-    $_SESSION['mensagem'] = $checklist->getError() ?? "Erro ao atualizar checklist.";
+try {
+    $checklist = new Checklists();
+    if ($checklist->update($id_checklist, $titulo, $descricao)) {
+        $_SESSION['mensagem'] = "Lista atualizada com sucesso!";
+        $_SESSION['tipo'] = 'success';
+    } else {
+        $_SESSION['mensagem'] = $checklist->getError() ?? "Erro ao atualizar a lista.";
+        $_SESSION['tipo'] = 'error';
+    }
+} catch (Exception $e) {
+    $_SESSION['mensagem'] = "Erro crítico no servidor: " . $e->getMessage();
     $_SESSION['tipo'] = 'error';
 }
 
-
-header('Location: /CheckLista/paginas/checklist/listar.php');
+header('Location: ' . BASE_URL . 'paginas/checklist/listar.php');
 exit;
+

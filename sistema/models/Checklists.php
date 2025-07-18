@@ -12,20 +12,22 @@ use crud\Update;
 class Checklists
 {
     /**
-     * @var
+     * @var mixed Armazena o resultado da última operação bem-sucedida.
      */
     private $resultado;
     /**
-     * @var
+     * @var string|null Armazena a mensagem de erro em caso de falha.
      */
     private $erro;
 
     /**
-     * @param $titulo
-     * @param $descricao
-     * @return bool
+     * Cria uma nova checklist no banco de dados, associada ao usuário logado.
+     *
+     * @param string $titulo O título da nova checklist.
+     * @param string $descricao A descrição da nova checklist.
+     * @return bool Retorna true em caso de sucesso.
      */
-    public function create($titulo, $descricao)
+    public function create($titulo, $descricao): bool
     {
         $id_usuario = usuario_logado_id();
 
@@ -46,10 +48,13 @@ class Checklists
     }
 
     /**
-     * @param array $criterios
-     * @return bool
+     * Lê checklists do banco de dados com base em um conjunto de critérios.
+     * Garante que apenas registros não deletados sejam retornados.
+     *
+     * @param array $criterios Array associativo de condições para a busca.
+     * @return bool Retorna true se a leitura for bem-sucedida.
      */
-    public function read(array $criterios)
+    public function read(array $criterios): bool
     {
         $criterios['deletada'] = 0;
 
@@ -63,6 +68,14 @@ class Checklists
         }
     }
 
+    /**
+     * Lista os detalhes completos de uma checklist, incluindo suas tarefas e dono.
+     * Verifica se o usuário logado é o dono ou se a lista foi compartilhada com ele.
+     *
+     * @param int $id_usuario ID do usuário logado.
+     * @param int $id_checklist ID da checklist a ser buscada.
+     * @return bool Retorna true se a consulta for bem-sucedida.
+     */
     public function listarPorChecklistComDetalhes($id_usuario, $id_checklist): bool
     {
         $sql = "
@@ -80,21 +93,12 @@ class Checklists
         WHERE 
             c.id_checklist = ?
             AND c.deletada = 0
-            AND (
-                c.id_usuario = ?
-                OR 
-                cc.id IS NOT NULL
-            )
+            AND (c.id_usuario = ? OR cc.id IS NOT NULL)
         ORDER BY c.data_criacao DESC, t.ordem ASC
     ";
 
         $read = new Read();
-
-        $params = [
-            $id_usuario,
-            $id_checklist,
-            $id_usuario
-        ];
+        $params = [$id_usuario, $id_checklist, $id_usuario];
 
         if ($read->query($sql, $params)) {
             $this->resultado = $read->getResult();
@@ -105,17 +109,24 @@ class Checklists
         }
     }
 
+    /**
+     * Atualiza os dados de uma checklist existente.
+     * Apenas o dono da checklist pode atualizá-la.
+     *
+     * @param int $id_checklist ID da checklist a ser atualizada.
+     * @param string $titulo O novo título.
+     * @param string $descricao A nova descrição.
+     * @return bool Retorna true em caso de sucesso.
+     */
     public function update($id_checklist, $titulo, $descricao): bool
     {
         $id_usuario = usuario_logado_id();
-
         $dados = [
             'titulo' => $titulo,
             'descricao' => $descricao,
             'ultima_atualizacao' => date('Y-m-d H:i:s'),
             'atualizado_por' => $id_usuario
         ];
-
         $condicoes = [
             'id_checklist' => $id_checklist,
             'id_usuario' => $id_usuario
@@ -131,7 +142,14 @@ class Checklists
         }
     }
 
-
+    /**
+     * Realiza um "soft delete" em uma checklist, marcando-a como deletada.
+     * Apenas o dono da checklist pode realizar esta ação.
+     *
+     * @param int $id_checklist ID da checklist a ser deletada.
+     * @param int $id_usuario ID do usuário logado (para verificação de permissão).
+     * @return bool Retorna true em caso de sucesso.
+     */
     public function softDelete($id_checklist, $id_usuario): bool
     {
         $update = new Update();
@@ -156,6 +174,7 @@ class Checklists
     }
 
     /**
+     * Retorna o resultado da última operação bem-sucedida.
      * @return mixed
      */
     public function getResult()
@@ -164,7 +183,8 @@ class Checklists
     }
 
     /**
-     * @return mixed
+     * Retorna a mensagem de erro se a última operação falhou.
+     * @return string|null
      */
     public function getError()
     {

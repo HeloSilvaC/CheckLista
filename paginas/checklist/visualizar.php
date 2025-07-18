@@ -1,8 +1,9 @@
 <?php
 require_once __DIR__ . '/../../autoload.php';
 
-carregarArquivo('/includes/cabecalho.php');
 exigir_login();
+
+carregarArquivo('/includes/cabecalho.php');
 
 use models\Checklists;
 use models\Compartilhamentos;
@@ -11,7 +12,7 @@ $id_usuario = usuario_logado_id();
 $id_checklist = $_GET['id'] ?? null;
 
 if (!$id_checklist) {
-    header('Location: /CheckLista/paginas/checklist/listar.php');
+    header('Location: ' . BASE_URL . 'paginas/checklist/listar.php');
     exit;
 }
 
@@ -19,10 +20,8 @@ $checklists = new Checklists();
 $checklists->listarPorChecklistComDetalhes($id_usuario, $id_checklist);
 $resultados = $checklists->getResult();
 
-
-
 if (empty($resultados)) {
-    header('Location: /CheckLista/paginas/checklist/listar.php');
+    header('Location: ' . BASE_URL . 'paginas/checklist/listar.php');
     exit;
 }
 
@@ -59,8 +58,8 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
 <?php if ($mensagem): ?>
     <script>
         Swal.fire({
-            icon: '<?= $tipo ?>',
-            title: '<?= $mensagem ?>',
+            icon: '<?= htmlspecialchars($tipo) ?>',
+            title: '<?= htmlspecialchars($mensagem) ?>',
             showConfirmButton: false,
             timer: 3000
         });
@@ -68,9 +67,20 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
 <?php endif; ?>
 
 <style>
-    .drag-handle { cursor: grab; margin-right: 15px; color: #888; }
-    .list-group-item:hover .drag-handle { color: #333; }
-    .sortable-ghost { opacity: 0.4; background: #e3f2fd; }
+    .drag-handle {
+        cursor: grab;
+        margin-right: 15px;
+        color: #888;
+    }
+
+    .list-group-item:hover .drag-handle {
+        color: #333;
+    }
+
+    .sortable-ghost {
+        opacity: 0.4;
+        background: #e3f2fd;
+    }
 </style>
 
 <div class="container mt-5">
@@ -80,20 +90,23 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
             <?php
             if ($id_usuario == $lista['id_usuario']):
                 ?>
-                <button type="button" class="btn btn-info" id="abrir-modal-compartilhar">
-                    <i class="fas fa-share-alt"></i> Compartilhar
+                <button type="button" class="btn btn-info text-white" id="abrir-modal-compartilhar">
+                    <i class="bi bi-share-fill me-1"></i> Compartilhar
                 </button>
             <?php endif; ?>
-            <a href="/CheckLista/paginas/checklist/listar.php" class="btn btn-outline-secondary">Voltar</a>
+            <a href="<?php echo BASE_URL; ?>paginas/checklist/listar.php" class="btn btn-outline-secondary"><i
+                        class="bi bi-arrow-left me-1"></i>Voltar</a>
         </div>
     </div>
 
     <small class="text-muted">
-        Criado por <strong><?= htmlspecialchars($lista['nome_dono']) ?></strong> em <?= date('d/m/Y', strtotime($lista['data_criacao'] ?? 'now')) ?>
+        <i class="bi bi-person"></i> Criado por
+        <strong><?= htmlspecialchars(html_entity_decode($lista['nome_dono'])) ?></strong> em <i
+                class="bi bi-calendar-event"></i> <?= date('d/m/Y', strtotime($lista['data_criacao'] ?? 'now')) ?>
     </small>
 
     <div class="mt-3">
-        <strong>Compartilhado com:</strong>
+        <strong><i class="bi bi-people"></i> Compartilhado com:</strong>
         <span id="lista-usuarios-compartilhados">
         <?php if (empty($usuarios_compartilhados)): ?>
             <span class="badge bg-light text-dark">Ninguém</span>
@@ -106,28 +119,35 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
     </div>
 
     <?php if (!empty($lista['descricao'])): ?>
-        <p class="lead text-muted mt-3"><?= nl2br(htmlspecialchars($lista['descricao'])) ?></p>
+        <p class="lead text-muted mt-3"><?= (htmlspecialchars($lista['descricao'])); ?></p>
     <?php endif; ?>
 
     <div id="tarefas" class="mt-4">
-        <h4 class="mb-3">Tarefas</h4>
+        <h4 class="mb-3"><i class="bi bi-check2-square"></i> Tarefas</h4>
         <div class="input-group mb-3">
-            <input type="text" autocomplete="off" id="nova-tarefa-input" class="form-control" placeholder="Adicionar uma nova tarefa...">
+            <input type="text" autocomplete="off" id="nova-tarefa-input" class="form-control"
+                   placeholder="Adicionar uma nova tarefa...">
             <button class="btn btn-primary" type="button" id="add-tarefa-btn">
-                <i class="fas fa-plus"></i> Adicionar
+                <i class="bi bi-plus-lg"></i> Adicionar
             </button>
         </div>
         <ul id="lista-tarefas" class="list-group">
             <?php if (empty($tarefas)): ?>
-                <li id="lista-vazia-msg" class="list-group-item text-center text-muted">Nenhuma tarefa ainda. Adicione a primeira!</li>
+                <li id="lista-vazia-msg" class="list-group-item text-center text-muted">Nenhuma tarefa ainda. Adicione a
+                    primeira!
+                </li>
             <?php else: ?>
                 <?php foreach ($tarefas as $tarefa): ?>
-                    <li class="list-group-item d-flex align-items-center" data-id="<?= htmlspecialchars($tarefa['id_tarefa']) ?>">
-                        <i class="fas fa-grip-vertical drag-handle"></i>
-                        <input type="checkbox" class="form-check-input me-3" <?= $tarefa['concluida'] ? 'checked' : '' ?> onchange="marcarConcluida(this, <?= htmlspecialchars($tarefa['id_tarefa']) ?>)">
+                    <li class="list-group-item d-flex align-items-center"
+                        data-id="<?= htmlspecialchars($tarefa['id_tarefa']) ?>">
+                        <i class="bi bi-grip-vertical drag-handle"></i>
+                        <input type="checkbox"
+                               class="form-check-input me-3" <?= $tarefa['concluida'] ? 'checked' : '' ?>
+                               onchange="marcarConcluida(this, <?= htmlspecialchars($tarefa['id_tarefa']) ?>)">
                         <span class="flex-grow-1 <?= $tarefa['concluida'] ? 'text-decoration-line-through' : '' ?>"><?= htmlspecialchars($tarefa['descricao']) ?></span>
-                        <button class="btn btn-danger btn-sm" onclick="removerTarefa(this, <?= htmlspecialchars($tarefa['id_tarefa']) ?>)">
-                            <i class="fas fa-trash-alt"></i>
+                        <button class="btn btn-danger btn-sm"
+                                onclick="removerTarefa(this, <?= htmlspecialchars($tarefa['id_tarefa']) ?>)">
+                            <i class="bi bi-trash3 me-1"></i>Remover
                         </button>
                     </li>
                 <?php endforeach; ?>
@@ -140,7 +160,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Compartilhar Checklist</h5>
+                <h5 class="modal-title"><i class="bi bi-share-fill me-2"></i>Compartilhar Lista</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -152,21 +172,24 @@ unset($_SESSION['mensagem'], $_SESSION['tipo']);
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btn-confirmar-share">Confirmar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-confirmar-share"><i
+                            class="bi bi-check-lg me-1"></i>Confirmar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <?php
-echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">';
+
 echo '<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>';
 carregarArquivo('includes/rodape.php');
 ?>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        const BASE_URL = '<?php echo BASE_URL; ?>';
         const idChecklist = <?= json_encode($id_checklist) ?>;
 
         const listaTarefasEl = document.getElementById('lista-tarefas');
@@ -181,7 +204,7 @@ carregarArquivo('includes/rodape.php');
         });
 
         addTarefaBtn.addEventListener('click', adicionarTarefa);
-        inputTarefa.addEventListener('keypress', function(e) {
+        inputTarefa.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 if (inputTarefa.value.trim() !== '') {
@@ -200,7 +223,7 @@ carregarArquivo('includes/rodape.php');
             selectUsuario.innerHTML = '<option>Carregando...</option>';
             selectUsuario.disabled = true;
 
-            fetch('/CheckLista/sistema/acoes/usuarios/listar_usuarios.php')
+            fetch(BASE_URL + 'sistema/acoes/usuarios/listar_usuarios.php')
                 .then(response => response.json())
                 .then(usuarios => {
                     selectUsuario.innerHTML = '<option value="">Selecione um usuário</option>';
@@ -227,9 +250,9 @@ carregarArquivo('includes/rodape.php');
                 return;
             }
 
-            fetch('/CheckLista/sistema/acoes/checklists/compartilhar_checklist.php', {
+            fetch(BASE_URL + 'sistema/acoes/checklists/compartilhar_checklist.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     id_checklist: idChecklist,
                     id_usuario_compartilhar: idUsuarioParaCompartilhar
@@ -260,10 +283,10 @@ carregarArquivo('includes/rodape.php');
         const ordemIds = Array.from(document.getElementById('lista-tarefas').children)
             .map(li => li.getAttribute('data-id')).filter(id => id);
         if (ordemIds.length === 0) return;
-        fetch('/CheckLista/sistema/acoes/tarefas/atualizar_ordem_tarefa.php', {
+        fetch('<?php echo BASE_URL; ?>sistema/acoes/tarefas/atualizar_ordem_tarefa.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ordem: ordemIds })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ordem: ordemIds})
         }).then(response => response.json()).then(data => {
             if (!data.success) Swal.fire('Erro', 'Não foi possível salvar a nova ordem.', 'error');
         }).catch(error => Swal.fire('Erro', 'Ocorreu um erro de conexão ao salvar a ordem.', 'error'));
@@ -277,23 +300,25 @@ carregarArquivo('includes/rodape.php');
         inputTarefa.disabled = true;
         document.getElementById('add-tarefa-btn').disabled = true;
 
-        fetch('/CheckLista/sistema/acoes/tarefas/criar_tarefa.php', {
+        fetch('<?php echo BASE_URL; ?>sistema/acoes/tarefas/criar_tarefa.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ descricao: descricao, id_checklist: <?= json_encode($id_checklist) ?> })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({descricao: descricao, id_checklist: <?= json_encode($id_checklist) ?>})
         }).then(response => response.json()).then(data => {
-            if (data.success && data.id && data.descricao) {
+            if (data.success && data.id) {
                 const msgVazia = document.getElementById('lista-vazia-msg');
                 if (msgVazia) msgVazia.remove();
+
                 const li = document.createElement('li');
                 li.className = 'list-group-item d-flex align-items-center';
                 li.setAttribute('data-id', data.id);
-                li.innerHTML = `<i class="fas fa-grip-vertical drag-handle"></i><input type="checkbox" class="form-check-input me-3" onchange="marcarConcluida(this, ${data.id})"><span class="flex-grow-1">${escapeHTML(data.descricao)}</span><button class="btn btn-danger btn-sm" onclick="removerTarefa(this, ${data.id})"><i class="fas fa-trash-alt"></i></button>`;
+
+                li.innerHTML = `<i class="bi bi-grip-vertical drag-handle"></i><input type="checkbox" class="form-check-input me-3" onchange="marcarConcluida(this, ${data.id})"><span class="flex-grow-1">${escapeHTML(descricao)}</span><button class="btn btn-danger btn-sm" onclick="removerTarefa(this, ${data.id})"><i class="bi bi-trash3 me-1"></i>Remover</button>`;
+
                 document.getElementById('lista-tarefas').appendChild(li);
                 inputTarefa.value = '';
-                Swal.fire('Sucesso', data.message, 'success');
             } else {
-                Swal.fire('Erro', 'Erro ao adicionar tarefa: ' + data.message, 'error');
+                Swal.fire('Erro', 'Erro ao adicionar tarefa: ' + (data.message || 'Ocorreu um erro.'), 'error');
             }
         }).catch(error => Swal.fire('Erro', 'Erro de conexão ao adicionar tarefa.', 'error'))
             .finally(() => {
@@ -307,10 +332,10 @@ carregarArquivo('includes/rodape.php');
         const concluida = checkbox.checked;
         const span = checkbox.closest('li').querySelector('span');
         span.classList.toggle('text-decoration-line-through', concluida);
-        fetch('/CheckLista/sistema/acoes/tarefas/concluir_tarefa.php', {
+        fetch('<?php echo BASE_URL; ?>sistema/acoes/tarefas/concluir_tarefa.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_tarefa: id, concluida: concluida })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id_tarefa: id, concluida: concluida})
         }).then(response => response.json()).then(data => {
             if (!data.success) {
                 span.classList.toggle('text-decoration-line-through', !concluida);
@@ -332,10 +357,10 @@ carregarArquivo('includes/rodape.php');
             confirmButtonText: 'Sim, remover!', cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('/CheckLista/sistema/acoes/tarefas/remover_tarefa.php', {
+                fetch('<?php echo BASE_URL; ?>sistema/acoes/tarefas/remover_tarefa.php', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id_tarefa: id })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id_tarefa: id})
                 }).then(response => response.json()).then(data => {
                     if (data.success) {
                         tarefaItem.remove();
