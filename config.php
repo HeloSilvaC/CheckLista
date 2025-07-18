@@ -1,27 +1,22 @@
 <?php
 
-define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
+$config = parse_ini_file('config.ini', true);
 
-// SISTEMA
+define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 define('SISTEMA_NOME', 'CheckLista');
 define('SISTEMA_VERSAO', '1.0.0');
-define('BASE_URL', 'http://localhost/CheckLista/');
 
-// BANCO DE DADOS
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'checklista_db');
+define('BASE_URL', $config['site']['base_url']);
 
-// Docker
-//define('DB_HOST', 'db');
-//define('DB_USER', 'user');
-//define('DB_PASS', 'senha123');
-//define('DB_NAME', 'checklista');
+define('DB_HOST', $config['database']['host']);
+define('DB_USER', $config['database']['user']);
+define('DB_PASS', $config['database']['pass']);
+define('DB_NAME', $config['database']['name']);
 
-// SENHA
 define('HASH_SENHA', PASSWORD_DEFAULT);
-define('CHAVE_CSRF', 'lindas123');
 
-// SESSÃO
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+?>
